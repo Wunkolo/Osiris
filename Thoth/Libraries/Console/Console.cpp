@@ -358,15 +358,15 @@ namespace Console
     {
         if( Arguments.size() >= 2 )
         {
-            if( Console::Instance().Commands.count(Arguments[1]) )
+            if( Console::Instance()->Commands.count(Arguments[1]) )
             {
                 if( Arguments.size() == 3 )
                 {
-                    std::cout << Console::Instance().Commands[Arguments[1]]->Info() << std::endl;
+                    std::cout << Console::Instance()->Commands[Arguments[1]]->Info() << std::endl;
                 }
                 else
                 {
-                    std::cout << Console::Instance().Commands[Arguments[1]]->Info(Arguments.back()) << std::endl;
+                    std::cout << Console::Instance()->Commands[Arguments[1]]->Info(Arguments.back()) << std::endl;
                 }
             }
             else
@@ -378,10 +378,10 @@ namespace Console
         else
         {
             // Show all command info
-            for( const auto &Command : Console::Instance().Commands )
+            for( const auto &Command : Console::Instance()->Commands )
             {
                 std::string Padded(Command.first);
-                Padded.resize(Console::Instance().ConsoleWidth >> 1, '\xC4');
+                Padded.resize(Console::Instance()->ConsoleWidth >> 1, '\xC4');
                 SetTextColor(Color::Info);
                 std::cout << Padded << std::endl;
                 SetTextColor(Color::Info^Color::Bright);
@@ -414,7 +414,7 @@ namespace Console
     bool Console::History::Run(const std::vector<std::string>& Arguments)
     {
         SetTextColor(Color::Info);
-        for( const auto &Command : Console::Instance().PrevCommands )
+        for( const auto &Command : Console::Instance()->PrevCommands )
         {
             for( const auto &Arg : Command )
             {

@@ -34,7 +34,7 @@ Thoth::Thoth()
     // Push Commands
     //PushModule<Research>("research");
     //PushModule<Player>("player");
-    Console::Console::Instance().PrintLine();
+    Console::Console::Instance()->PrintLine();
 }
 
 Thoth::~Thoth()
@@ -45,8 +45,8 @@ void Thoth::Tick(const std::chrono::high_resolution_clock::duration &DeltaTime)
 {
     if( _kbhit() )
     {
-        Console::Console::Instance().HandleInput(_getch());
-        Console::Console::Instance().PrintLine();
+        Console::Console::Instance()->HandleInput(_getch());
+        Console::Console::Instance()->PrintLine();
     }
     for( std::pair<std::string, std::shared_ptr<ThothModule>> Command : Commands )
     {

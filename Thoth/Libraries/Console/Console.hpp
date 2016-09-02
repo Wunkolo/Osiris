@@ -98,9 +98,11 @@ namespace Console
         // Singleton
         Console(Console const&) = delete;
         Console& operator=(Console const&) = delete;
-        static Console& Instance()
+        inline static std::shared_ptr<Console> Instance()
         {
-            static Console ConsoleInstance;
+            static std::shared_ptr<Console> ConsoleInstance
+                = std::shared_ptr<Console>(new Console());
+
             return ConsoleInstance;
         }
 
@@ -109,7 +111,6 @@ namespace Console
 
         void PushCommand(const std::string &CommandName, std::shared_ptr<Command> Command);
         void PopCommand(const std::string &CommandName);
-
     protected:
         Console();
     private:
