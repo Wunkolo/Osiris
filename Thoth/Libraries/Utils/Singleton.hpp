@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 
 namespace Util
 {
@@ -6,9 +7,9 @@ namespace Util
     class Singleton
     {
     public:
-        static T& Instance()
+        static std::shared_ptr<T> Instance()
         {
-            static T Inst;
+            static std::shared_ptr<T> Inst = std::make_shared<T>();
             return Inst;
         }
 
