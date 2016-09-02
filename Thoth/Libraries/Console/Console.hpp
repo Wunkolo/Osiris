@@ -54,19 +54,21 @@ namespace Console
         Suggestion = Cyan
     };
 
+    typedef std::underlying_type<Color>::type ColorType;
+
     inline Color operator| (Color Left, Color Right)
     {
         return static_cast<Color>(
-            static_cast<std::underlying_type_t<Color>>(Left)
-            | static_cast<std::underlying_type_t<Color>>(Right)
+            static_cast<ColorType>(Left)
+            | static_cast<ColorType>(Right)
             );
     }
 
     inline Color operator|= (Color Left, Color Right)
     {
         Left = static_cast<Color>(
-            static_cast<std::underlying_type_t<Color>>(Left)
-            | static_cast<std::underlying_type_t<Color>>(Right)
+            static_cast<ColorType>(Left)
+            | static_cast<ColorType>(Right)
             );
         return Left;
     }
@@ -74,16 +76,16 @@ namespace Console
     inline Color operator^ (Color Left, Color Right)
     {
         return static_cast<Color>(
-            static_cast<std::underlying_type_t<Color>>(Left)
-            ^ static_cast<std::underlying_type_t<Color>>(Right)
+            static_cast<ColorType>(Left)
+            ^ static_cast<ColorType>(Right)
             );
     }
 
     inline Color operator^= (Color Left, Color Right)
     {
         Left = static_cast<Color>(
-            static_cast<std::underlying_type_t<Color>>(Left)
-            ^ static_cast<std::underlying_type_t<Color>>(Right)
+            static_cast<ColorType>(Left)
+            ^ static_cast<ColorType>(Right)
             );
         return Left;
     }
