@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <functional>
 
 #include <Windows.h>
 
@@ -11,30 +12,37 @@
 
 #include "Thoth.hpp"
 
-int32_t __stdcall TopLevelExceptionHandler(uint32_t ErrorCode, const EXCEPTION_POINTERS* const ExceptionInfo);
+int32_t __stdcall StructuredExceptionPrinter(
+    uint32_t ErrorCode,
+    const EXCEPTION_POINTERS* const ExceptionInfo
+);
 
 uint32_t __stdcall ThothThread(void*)
 {
     __try
     {
-        std::chrono::high_resolution_clock::time_point PrevTime, CurTime;
-        CurTime = std::chrono::high_resolution_clock::now();
-        while( true )
+        []()
         {
-            PrevTime = CurTime;
+            Console::AllocateConsole("Thoth");
+            std::chrono::high_resolution_clock::time_point PrevTime, CurTime;
             CurTime = std::chrono::high_resolution_clock::now();
-            Thoth::Instance().Tick(
-                (CurTime - PrevTime)
-            );
-        }
+            while( true )
+            {
+                PrevTime = CurTime;
+                CurTime = std::chrono::high_resolution_clock::now();
+                Thoth::Instance()->Tick(
+                    (CurTime - PrevTime)
+                );
+            }
+        }();
     }
-    __except( TopLevelExceptionHandler(GetExceptionCode(), GetExceptionInformation()) )
+    __except( StructuredExceptionPrinter(GetExceptionCode(), GetExceptionInformation()) )
     {
     }
     return 0;
 }
 
-int32_t __stdcall DllMain(HINSTANCE hDLL, uint32_t Reason, void* Reserved)
+int32_t __stdcall DllMain(HINSTANCE hDLL, uint32_t Reason, void *Reserved)
 {
     switch( Reason )
     {
@@ -46,11 +54,10 @@ int32_t __stdcall DllMain(HINSTANCE hDLL, uint32_t Reason, void* Reserved)
             return false;
         }
 
-        Console::AllocateConsole("Thoth");
-
-        CreateThread(nullptr,
+        CreateThread(
+            nullptr,
             0,
-            reinterpret_cast<DWORD(__stdcall*)(void*)>(&ThothThread),
+            reinterpret_cast<unsigned long(__stdcall*)(void*)>(&ThothThread),
             nullptr,
             0,
             nullptr);
@@ -67,7 +74,7 @@ int32_t __stdcall DllMain(HINSTANCE hDLL, uint32_t Reason, void* Reserved)
     return false;
 }
 
-int32_t __stdcall TopLevelExceptionHandler(uint32_t ErrorCode, const EXCEPTION_POINTERS* const ExceptionInfo)
+int32_t __stdcall StructuredExceptionPrinter(uint32_t ErrorCode, const EXCEPTION_POINTERS* const ExceptionInfo)
 {
     std::cout << std::endl << "Exception: [0x" << std::uppercase << std::hex << ExceptionInfo->ExceptionRecord->ExceptionCode << ']';
 
