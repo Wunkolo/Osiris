@@ -294,7 +294,6 @@ namespace Console
                 std::cout << Suggestion;
                 std::cout << std::string(Suggestion.length(), '\b');
                 SetTextColor(Color::Input);
-                //Suggestion.clear();
                 std::cout << CurCommand[i];
             }
             else
@@ -342,7 +341,7 @@ namespace Console
                     }
                     else
                     {
-                        SetTextColor(Error);
+                        SetTextColor(Color::Error);
                         std::cout << "Command: " << Args[1] << "not found." << std::endl;
                     }
                 }
@@ -401,9 +400,9 @@ namespace Console
         return "";
     };
 
-    void SetTextColor(uint8_t Color)
+    void SetTextColor(Color NewColor)
     {
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), Color);
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), static_cast<std::underlying_type_t<Color>>(NewColor));
     }
 
     bool AllocateConsole(const std::string& ConsoleTitle)

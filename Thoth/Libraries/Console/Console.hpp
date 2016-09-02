@@ -28,7 +28,7 @@ namespace Console
         virtual std::string Suggest(const std::vector<std::string>& Arguments) const = 0;
     };
 
-    enum Color : uint8_t
+    enum class Color : uint8_t
     {
         None = 0,
         Bright = 0x8,
@@ -53,6 +53,40 @@ namespace Console
         Input = Bright | Cyan,
         Suggestion = Cyan
     };
+
+    inline Color operator| (Color Left, Color Right)
+    {
+        return static_cast<Color>(
+            static_cast<std::underlying_type_t<Color>>(Left)
+            | static_cast<std::underlying_type_t<Color>>(Right)
+            );
+    }
+
+    inline Color operator|= (Color Left, Color Right)
+    {
+        Left = static_cast<Color>(
+            static_cast<std::underlying_type_t<Color>>(Left)
+            | static_cast<std::underlying_type_t<Color>>(Right)
+            );
+        return Left;
+    }
+
+    inline Color operator^ (Color Left, Color Right)
+    {
+        return static_cast<Color>(
+            static_cast<std::underlying_type_t<Color>>(Left)
+            ^ static_cast<std::underlying_type_t<Color>>(Right)
+            );
+    }
+
+    inline Color operator^= (Color Left, Color Right)
+    {
+        Left = static_cast<Color>(
+            static_cast<std::underlying_type_t<Color>>(Left)
+            ^ static_cast<std::underlying_type_t<Color>>(Right)
+            );
+        return Left;
+    }
 
     class Console : public Command
     {
@@ -97,7 +131,7 @@ namespace Console
 
     bool AllocateConsole(const std::string& ConsoleTitle);
 
-    void SetTextColor(uint8_t Color);
+    void SetTextColor(Color Color);
 
     size_t GetWidth();
 }
