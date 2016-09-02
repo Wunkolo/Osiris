@@ -141,6 +141,7 @@
     <ClInclude Include="Libraries\Utils\Macros.hpp" />
     <ClInclude Include="Libraries\Utils\Pointer.hpp" />
     <ClInclude Include="Libraries\Utils\Singleton.hpp" />
+    <ClInclude Include="Libraries\Utils\Utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
