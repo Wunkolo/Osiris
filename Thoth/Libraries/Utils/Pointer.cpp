@@ -8,18 +8,29 @@ namespace Util
 {
     Pointer Pointer::GetModuleBase()
     {
-        static void* Base = nullptr;
+        // Cache base pointer
+        static void* CacheBase = nullptr;
 
-        if( Base == nullptr )
+        if( CacheBase == nullptr )
         {
-            HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, GetCurrentProcessId());
+            void* hSnapShot = CreateToolhelp32Snapshot(
+                TH32CS_SNAPMODULE,
+                GetCurrentProcessId()
+            );
+
             if( hSnapShot == INVALID_HANDLE_VALUE )
+            {
                 return nullptr;
-            MODULEENTRY32 lpModuleEntry;
+            }
+
+            MODULEENTRY32 lpModuleEntry = { 0 };
             lpModuleEntry.dwSize = sizeof(MODULEENTRY32);
             int bRet = Module32First(hSnapShot, &lpModuleEntry);
             CloseHandle(hSnapShot);
-            Base = (bRet != 0) ? (void*)lpModuleEntry.modBaseAddr : nullptr;
+            CacheBase =
+                (bRet != 0) ?
+                reinterpret_cast<void*>(lpModuleEntry.modBaseAddr)
+                : nullptr;
         }
 
         return Pointer(Base);
@@ -27,20 +38,26 @@ namespace Util
 
     Pointer Pointer::GetModuleBase(const char* ModuleName)
     {
-        HANDLE hSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, GetCurrentProcessId());
-        if( hSnapShot == INVALID_HANDLE_VALUE )
-            return nullptr;
+        void* hSnapShot = CreateToolhelp32Snapshot(
+            TH32CS_SNAPMODULE,
+            GetCurrentProcessId()
+        );
 
-        MODULEENTRY32 lpModuleEntry;
+        if( hSnapShot == INVALID_HANDLE_VALUE )
+        {
+            return nullptr;
+        }
+
+        MODULEENTRY32 lpModuleEntry = { 0 };
         lpModuleEntry.dwSize = sizeof(MODULEENTRY32);
-        BOOL bModule = Module32First(hSnapShot, &lpModuleEntry);
+        int32_t bModule = Module32First(hSnapShot, &lpModuleEntry);
         while( bModule )
         {
             //If module name matches: return it
             if( !std::strcmp(ModuleName, lpModuleEntry.szModule) )
             {
                 CloseHandle(hSnapShot);
-                return (void*)lpModuleEntry.modBaseAddr;
+                return reinterpret_cast<void*>(lpModuleEntry.modBaseAddr);
             }
             bModule = Module32Next(hSnapShot, &lpModuleEntry);
         }
