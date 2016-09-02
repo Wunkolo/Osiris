@@ -9,6 +9,8 @@
 
 #include <Console\Console.hpp>
 
+#include "Thoth.hpp"
+
 int32_t __stdcall TopLevelExceptionHandler(uint32_t ErrorCode, const EXCEPTION_POINTERS* const ExceptionInfo);
 
 uint32_t __stdcall ThothThread(void*)
@@ -21,9 +23,9 @@ uint32_t __stdcall ThothThread(void*)
         {
             PrevTime = CurTime;
             CurTime = std::chrono::high_resolution_clock::now();
-            //Flask::Instance().Tick(
-            //    std::chrono::duration_cast<std::chrono::duration<double>>(CurTime - PrevTime)
-            //);
+            Thoth::Instance().Tick(
+                (CurTime - PrevTime)
+            );
         }
     }
     __except( TopLevelExceptionHandler(GetExceptionCode(), GetExceptionInformation()) )

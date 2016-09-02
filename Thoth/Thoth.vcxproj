@@ -132,6 +132,7 @@
     <ClCompile Include="Libraries\Console\Console.cpp" />
     <ClCompile Include="Libraries\Utils\Checksum.cpp" />
     <ClCompile Include="Libraries\Utils\Pointer.cpp" />
+    <ClCompile Include="Thoth.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +142,7 @@
     <ClInclude Include="Libraries\Utils\Macros.hpp" />
     <ClInclude Include="Libraries\Utils\Pointer.hpp" />
     <ClInclude Include="Libraries\Utils\Singleton.hpp" />
+    <ClInclude Include="Thoth.hpp" />
     <ClInclude Include="Libraries\Utils\Utils.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
