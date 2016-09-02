@@ -14,12 +14,12 @@
 
 Thoth::Thoth()
 {
-    Console::SetTextColor(Console::Info);
+    Console::SetTextColor(Console::Color::Info);
     std::cout << "Thoth [" << __DATE__ << " : " << __TIME__ << ']' << std::endl;
-    Console::SetTextColor(Console::Cyan | Console::Bright);
+    Console::SetTextColor(Console::Color::Cyan | Console::Color::Bright);
     std::cout << "\t\xC4Wunkolo (Wunkolo@gmail.com)\n";
     std::cout << std::string(Console::GetWidth() - 1, '\xC4') << std::endl;
-    Console::SetTextColor(Console::Info);
+    Console::SetTextColor(Console::Color::Info);
 
     char *Path = new char[MAX_PATH]();
 
@@ -34,7 +34,7 @@ Thoth::Thoth()
     // Push Commands
     //PushModule<Research>("research");
     //PushModule<Player>("player");
-    Terminal.PrintLine();
+    Console::Console::Instance().PrintLine();
 }
 
 Thoth::~Thoth()
@@ -45,8 +45,8 @@ void Thoth::Tick(const std::chrono::high_resolution_clock::duration &DeltaTime)
 {
     if( _kbhit() )
     {
-        Terminal.HandleInput(_getch());
-        Terminal.PrintLine();
+        Console::Console::Instance().HandleInput(_getch());
+        Console::Console::Instance().PrintLine();
     }
     for( std::pair<std::string, std::shared_ptr<ThothModule>> Command : Commands )
     {

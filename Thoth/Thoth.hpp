@@ -37,8 +37,5 @@ public:
     }
 
 private:
-
-    Console::Console Terminal;
-
     std::map<std::string, std::shared_ptr<ThothModule>> Commands;
 };

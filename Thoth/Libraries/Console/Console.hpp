@@ -19,13 +19,13 @@ namespace Console
         }
 
         // Return true on success
-        virtual bool Run(const std::vector<std::string>& Arguments) = 0;
+        virtual bool Run(const std::vector<std::string> &Arguments) = 0;
 
         // Command and usage info
-        virtual std::string Info(const std::string& Topic = "") const = 0;
+        virtual std::string Info(const std::string &Topic = "") const = 0;
 
         // Suggest auto-complete strings for arugments
-        virtual std::string Suggest(const std::vector<std::string>& Arguments) const = 0;
+        virtual std::string Suggest(const std::vector<std::string> &Arguments) const = 0;
     };
 
     enum class Color : uint8_t
@@ -90,30 +90,66 @@ namespace Console
         return Left;
     }
 
-    class Console : public Command
+    class Console
     {
     public:
-        Console();
         ~Console();
+
+        // Singleton
+        Console(Console const&) = delete;
+        Console& operator=(Console const&) = delete;
+        static Console& Instance()
+        {
+            static Console ConsoleInstance;
+            return ConsoleInstance;
+        }
 
         void HandleInput(uint32_t KeyCode);
         void PrintLine();
 
-        void PushCommand(const std::string& CommandName, std::shared_ptr<Command> Command);
-        void PopCommand(const std::string& CommandName);
+        void PushCommand(const std::string &CommandName, std::shared_ptr<Command> Command);
+        void PopCommand(const std::string &CommandName);
+
+    protected:
+        Console();
     private:
-
-        // Return true on success
-        bool Run(const std::vector<std::string>& Arguments);
-
-        // Command and usage info
-        std::string Info(const std::string& Topic = "") const;
-
-        // Suggest auto-complete strings for arguments
-        std::string Suggest(const std::vector<std::string>& Arguments) const
+        // meta commands
+        class Help : public Command
         {
-            return ""; // todo: help suggestion;
+        public:
+            Help();
+            ~Help();
+
+            bool Run(const std::vector<std::string> &Arguments);
+            std::string Info(const std::string &Topic = "") const;
+            std::string Suggest(const std::vector<std::string> &Arguments) const;
         };
+
+        class History : public Command
+        {
+        public:
+            History();
+            ~History();
+
+            bool Run(const std::vector<std::string>& Arguments);
+            std::string Info(const std::string& Topic) const;
+            std::string Suggest(const std::vector<std::string>& Arguments) const;
+        };
+
+        class Quit : public Command
+        {
+        public:
+            Quit();
+            ~Quit();
+
+            bool Run(const std::vector<std::string>& Arguments);
+            std::string Info(const std::string& Topic) const;
+            std::string Suggest(const std::vector<std::string>& Arguments) const;
+        };
+
+        friend class Help;
+        friend class History;
+        friend class Quit;
 
         std::map<std::string, std::shared_ptr<Command>> Commands;
 
