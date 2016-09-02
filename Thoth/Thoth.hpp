@@ -30,8 +30,8 @@ public:
     {
         std::shared_ptr<T> Module = std::make_shared<T>();
 
-        // Push to termonal command list
-        Terminal.PushCommand(Name, Module);
+        // Push to command list
+        Console::Console::Instance()->PushCommand(Name, Module);
         // Add to Command list
         Commands[Name] = Module;
     }

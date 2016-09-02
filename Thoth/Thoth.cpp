@@ -21,11 +21,11 @@ Thoth::Thoth()
     std::cout << std::string(Console::GetWidth() - 1, '\xC4') << std::endl;
     Console::SetTextColor(Console::Color::Info);
 
-    char *Path = new char[MAX_PATH]();
+    std::string Path;
+    Path.resize(MAX_PATH);
 
-    GetModuleFileNameA(nullptr, Path, MAX_PATH);
+    GetModuleFileNameA(nullptr, &Path[0], MAX_PATH);
     std::cout << "Process Module Path: " << Path << std::endl;
-    delete[] Path;
 
     std::cout << std::hex << std::uppercase << std::setfill('0');
     std::cout << "Thoth Thread ID: 0x" << GetCurrentThreadId() << std::endl;
