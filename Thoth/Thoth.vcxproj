@@ -131,7 +131,7 @@
   <ItemGroup>
     <ClCompile Include="Libraries\Console\Console.cpp" />
     <ClCompile Include="Libraries\Utils\Checksum.cpp" />
-    <ClCompile Include="Libraries\Utils\Pointer.cpp" />
+    <ClCompile Include="Libraries\Utils\Process.cpp" />
     <ClCompile Include="Thoth.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -143,6 +143,7 @@
     <ClInclude Include="Libraries\Utils\Macros.hpp" />
     <ClInclude Include="Libraries\Utils\NonCopyable.hpp" />
     <ClInclude Include="Libraries\Utils\Pointer.hpp" />
+    <ClInclude Include="Libraries\Utils\Process.hpp" />
     <ClInclude Include="Libraries\Utils\Singleton.hpp" />
     <ClInclude Include="Thoth.hpp" />
     <ClInclude Include="Libraries\Utils\Utils.hpp" />

@@ -21,13 +21,13 @@
     <ClCompile Include="Libraries\Console\Console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Libraries\Utils\Pointer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Libraries\Utils\Checksum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Thoth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Libraries\Utils\Process.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -60,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\Utils\BitField.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Utils\Process.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

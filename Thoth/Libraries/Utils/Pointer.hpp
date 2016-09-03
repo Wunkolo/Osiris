@@ -96,15 +96,6 @@ namespace Util
             std::fill_n(Point<T>(), Count, Data);
         }
 
-        static Pointer GetModuleBase();
-        static Pointer GetModuleBase(const char* ModuleName);
-
-        inline static Pointer Base()
-        {
-            const static Pointer ProgramBase(GetModuleBase());
-            return ProgramBase;
-        }
-
     private:
         std::uintptr_t Address;
     };
