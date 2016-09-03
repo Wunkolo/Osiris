@@ -23,9 +23,6 @@ namespace Console
 
         // Command and usage info
         virtual std::string Info(const std::string &Topic = "") const = 0;
-
-        // Suggest auto-complete strings for arugments
-        virtual std::string Suggest(const std::vector<std::string> &Arguments) const = 0;
     };
 
     enum class Color : uint8_t
@@ -123,7 +120,6 @@ namespace Console
 
             bool Run(const std::vector<std::string> &Arguments);
             std::string Info(const std::string &Topic = "") const;
-            std::string Suggest(const std::vector<std::string> &Arguments) const;
         };
 
         class History : public Command
@@ -134,7 +130,6 @@ namespace Console
 
             bool Run(const std::vector<std::string>& Arguments);
             std::string Info(const std::string& Topic) const;
-            std::string Suggest(const std::vector<std::string>& Arguments) const;
         };
 
         class Quit : public Command
@@ -145,7 +140,6 @@ namespace Console
 
             bool Run(const std::vector<std::string>& Arguments);
             std::string Info(const std::string& Topic) const;
-            std::string Suggest(const std::vector<std::string>& Arguments) const;
         };
 
         friend class Help;
@@ -155,13 +149,14 @@ namespace Console
         std::map<std::string, std::shared_ptr<Command>> Commands;
 
         // History
-        std::vector<std::vector<std::string>> PrevCommands;
-        std::vector<std::vector<std::string>>::iterator PrevCommand;
+        std::vector<std::string> PrevCommands;
+        std::vector<std::string>::iterator PrevCommand;
 
         // Current Command
-        size_t CurArg;
-        std::vector<std::string> CurCommand;
-        std::string Suggestion;
+        std::string CurCommand;
+        std::string CurSuggestion;
+
+        std::string NearestCommand(const std::string &CurrentCommand) const;
 
         // Console Data
         size_t ConsoleWidth;

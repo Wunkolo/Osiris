@@ -1,23 +1,37 @@
 #include "Console.hpp"
 
+#include <algorithm>
+#include <sstream>
+
 #include <Windows.h>
 #include <conio.h> // _getch()
 #pragma warning(disable:4996)
 
 #include <io.h>
-
 #include <cctype> //isgraph
-
-#include <algorithm>
 
 #define ps1beg "\xAF["
 #define ps1end "]\xAE"
 
+// Utils
+namespace
+{
+    std::vector<std::string> SplitString(const std::string &String, char Delimiter)
+    {
+        std::vector<std::string> SplitString;
+        std::stringstream StringStream(String);
+        std::string Token;
+        while( std::getline(StringStream, Token, Delimiter) )
+        {
+            SplitString.push_back(Token);
+        }
+        return SplitString;
+    }
+}
+
 namespace Console
 {
     Console::Console()
-        :
-        CurArg(0)
     {
         ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
         SetConsoleOutputCP(437);
@@ -35,6 +49,30 @@ namespace Console
         PushCommand("quit", std::make_shared<Quit>());
     }
 
+    std::string Console::NearestCommand(const std::string & Command) const
+    {
+        if( !Command.empty() )
+        {
+            // Find closest matching command
+            std::vector<std::string> Suggestions;
+
+            for( const auto &Cmd : Commands )
+            {
+                if( !Command.compare(0, Command.length(), (Cmd.first), 0, Command.length()) )
+                {
+                    Suggestions.push_back((Cmd.first));
+                }
+            }
+
+            if( Suggestions.size() )
+            {
+                // Return first match, for now
+                return Suggestions.front();
+            }
+        }
+        return "";
+    }
+
     Console::~Console()
     {
         Commands.clear();
@@ -44,141 +82,66 @@ namespace Console
     {
         switch( KeyCode )
         {
-        case ' ': // Space
-        {
-            if( !CurCommand.empty() )
-            {
-                if( !CurCommand.back().empty() )
-                {
-                    //Go to next argument;
-                    CurArg++;
-                    CurCommand.push_back("");
-                }
-                if( Commands.count(CurCommand.front()) )
-                {
-                    Suggestion = Commands[CurCommand.front()]->Suggest(CurCommand);
-                }
-            }
-            break;
-        }
-        case '\b': // Backspace
-        {
-            if( !CurCommand.empty() )
-            {
-                // Remove character from current command
-                if( !CurCommand.back().empty() )
-                {
-                    CurCommand.back().pop_back();
-                }
-                // Current argument is empty.
-                // Go back an argument
-                if( CurCommand.back().empty() )
-                {
-                    CurCommand.pop_back();
-                    if( CurArg )
-                    {
-                        CurArg--;
-                    }
-                }
-                // Suggest
-                Suggestion.clear();
-                if( CurArg == 0 && !CurCommand.empty() )
-                {
-                    // Find closest matching command
-
-                    std::vector<std::string> Suggestions;
-
-                    for( const auto &Cmd : Commands )
-                    {
-                        if( !CurCommand[0].compare(0, CurCommand[0].length(), (Cmd.first), 0, CurCommand[0].length()) )
-                        {
-                            Suggestions.push_back((Cmd.first));
-                        }
-                    }
-
-                    if( Suggestions.size() )
-                    {
-                        // Return first match
-                        Suggestion = Suggestions.front();
-                    }
-
-                    Suggestions.clear();
-                }
-                else
-                {
-                    if( !CurCommand.empty() && Commands.count(CurCommand.front()) )
-                    {
-                        Suggestion = Commands[CurCommand.front()]->Suggest(CurCommand);
-                    }
-                }
-            }
-            break;
-        }
         case '\r': // Enter
         {
             SetTextColor(Color::Info);
             // Clear previous suggestion
-            if( !Suggestion.empty() )
+            if( !CurSuggestion.empty() )
             {
-                std::cout.width(Suggestion.length());
+                std::cout.width(CurSuggestion.length());
                 std::cout.fill(' ');
                 std::cout << "";
 
-                std::cout.width(Suggestion.length());
+                std::cout.width(CurSuggestion.length());
                 std::cout.fill('\b');
                 std::cout << "";
             }
 
             std::cout << ps1end << std::endl;
-            if( !CurCommand.empty() )
+
+            std::string Command = CurCommand.substr(0, CurCommand.find_first_of(' '));
+
+            if( !Command.empty() )
             {
-                if( CurCommand.back().empty() )
+                // Run command if it exists
+                if( Commands.count(Command)
+                    && Commands[Command] )
                 {
-                    CurCommand.pop_back();
-                }
-                // Run command
-                if( Commands.count(CurCommand[0]) && Commands[CurCommand[0]] )
-                {
-                    if( !Commands[CurCommand[0]]->Run(CurCommand) )
+                    if( !Commands[Command]->Run(SplitString(CurCommand, ' ')) )
                     {
                         // Error running command;
                         SetTextColor(Color::Error);
-                        std::cout << "Invalid Usage: " << CurCommand[0] << std::endl;
+                        std::cout << "Invalid Usage: " << Command << std::endl;
                         SetTextColor(Color::Info);
-                        std::cout << Commands[CurCommand[0]]->Info() << std::endl;
+                        std::cout << Commands[Command]->Info() << std::endl;
                     }
                 }
                 else
                 {
                     SetTextColor(Color::Error);
-                    std::cout << "Unknown Command: " << CurCommand[0] << std::endl;
+                    std::cout << "Unknown Command: " << Command << std::endl;
                 }
+
+                // Add to history
+                PrevCommands.push_back(CurCommand);
+                PrevCommand = PrevCommands.end();
+                CurCommand.clear();
+                CurSuggestion.clear();
             }
 
             SetTextColor(Color::Info);
-            if( !CurCommand.empty() )
-            {
-                PrevCommands.push_back(CurCommand);
-                PrevCommand = PrevCommands.end();
-            }
-            CurArg = 0;
-            CurCommand.clear();
             break;
         }
         case '\t': // Tab
         {
-            // Get suggestion
-            if( !Suggestion.empty() && !CurCommand.empty() )
+            // Tab completion
+            if( !CurSuggestion.empty() && !CurCommand.empty() )
             {
-                CurCommand.back() = Suggestion;
-                Suggestion.clear();
-                CurArg++;
-                CurCommand.push_back("");
-                Suggestion = Commands[CurCommand.front()]->Suggest(CurCommand);
+                CurCommand = CurSuggestion;
             }
             break;
         }
-        case 22: // Ctrl + V
+        case '\x16': // Ctrl + V
         {
             // Paste in clipbard
             if( OpenClipboard(nullptr) )
@@ -192,7 +155,7 @@ namespace Console
             }
             break;
         }
-        case 0x00:
+        case 0x00: // Function Keys
         case 0xE0:
         {
             uint32_t Func = _getch();
@@ -208,7 +171,6 @@ namespace Console
                     }
 
                     CurCommand = *PrevCommand;
-                    CurArg = CurCommand.size() - 1;
                 }
                 break;
             }
@@ -220,79 +182,41 @@ namespace Console
                     {
                         PrevCommand++;
                         CurCommand = *PrevCommand;
-                        CurArg = CurCommand.size() - 1;
                     }
                     else if( PrevCommand == PrevCommands.end() - 1 )
                     {
                         PrevCommand++;
-                        CurArg = 0;
                         CurCommand.clear();
                     }
                     else
                     {
-                        CurArg = 0;
                         CurCommand.clear();
                     }
                 }
-                break;
-            }
-            case 0x4B: // Left
-            {
-                break;
-            }
-            case 0x4D: // Right
-            {
-                break;
-            }
-            default:
-            {
-                // Unknown function key
                 break;
             }
             }
             break;
         }
-        default: // Every other character
+        case '\b': // Backspace
         {
-            if( std::isgraph(KeyCode) )
+            if( !CurCommand.empty() )
             {
-                if( CurCommand.empty() )
-                {
-                    CurCommand.push_back("");
-                }
-                CurCommand.back().push_back(static_cast<uint8_t>(KeyCode));
+                // Remove character from current command
+                CurCommand.pop_back();
+                // Update Suggestion
+                CurSuggestion = NearestCommand(CurCommand);
+            }
+            break;
+        }
+        default: // Every other character (alphanum and space)
+        {
+            if( std::isgraph(KeyCode) || std::isspace(KeyCode) )
+            {
+                CurCommand.push_back(static_cast<uint8_t>(KeyCode));
 
-                // Suggest
-                Suggestion.clear();
-                if( CurArg == 0 )
-                {
-                    // Find closest matching command
-
-                    std::vector<std::string> Suggestions;
-
-                    for( const auto &Cmd : Commands )
-                    {
-                        if( !CurCommand[0].compare(0, CurCommand[0].length(), (Cmd.first), 0, CurCommand[0].length()) )
-                        {
-                            Suggestions.push_back((Cmd.first));
-                        }
-                    }
-
-                    if( Suggestions.size() )
-                    {
-                        // Return first match
-                        Suggestion = Suggestions.front();
-                    }
-
-                    Suggestions.clear();
-                }
-                else
-                {
-                    if( Commands.count(CurCommand.front()) )
-                    {
-                        Suggestion = Commands[CurCommand.front()]->Suggest(CurCommand);
-                    }
-                }
+                // Update Suggestion
+                CurSuggestion = NearestCommand(CurCommand);
             }
             break;
         }
@@ -303,44 +227,32 @@ namespace Console
     {
         SetTextColor(Color::Info);
         std::cout << '\r';
-        std::cout.width(ConsoleWidth - 2);
+        std::cout.width(ConsoleWidth - 1);
         std::cout.fill(' ');
         std::cout << '\r' << ps1beg;
         SetTextColor(Color::Input);
 
-        for( size_t i = 0; i < CurCommand.size(); i++ )
+        if( CurSuggestion.length() )
         {
-            if( Suggestion.length() && i == CurArg )
-            {
-                // Print suggestion
-                SetTextColor(Color::Suggestion);
-                std::cout << Suggestion;
-                // Go back
-                std::cout.width(Suggestion.length());
-                std::cout.fill('\b');
-                std::cout << "";
-
-                // Print currently typed in command
-                SetTextColor(Color::Input);
-                std::cout << CurCommand[i];
-            }
-            else
-            {
-                std::cout << CurCommand[i];
-                if( i == CurCommand.size() - 1 )
-                {
-                    std::cout << ' ';
-                }
-            }
+            // Print suggestion
+            SetTextColor(Color::Suggestion);
+            std::cout << CurSuggestion;
+            // Go back
+            std::cout.width(CurSuggestion.length());
+            std::cout.fill('\b');
+            std::cout << "";
         }
+        // Print currently typed in command
+        SetTextColor(Color::Input);
+        std::cout << CurCommand;
         std::cout.flush();
     }
 
-    void Console::PushCommand(const std::string& CommandName, std::shared_ptr<Command> Command)
+    void Console::PushCommand(const std::string &CommandName, std::shared_ptr<Command> Command)
     {
         Commands[CommandName] = Command;
     }
-    void Console::PopCommand(const std::string& CommandName)
+    void Console::PopCommand(const std::string &CommandName)
     {
         if( Commands.count(CommandName) )
         {
@@ -359,7 +271,7 @@ namespace Console
     {
     }
 
-    bool Console::Help::Run(const std::vector<std::string>& Arguments)
+    bool Console::Help::Run(const std::vector<std::string> &Arguments)
     {
         if( Arguments.size() >= 2 )
         {
@@ -377,7 +289,7 @@ namespace Console
             else
             {
                 SetTextColor(Color::Error);
-                std::cout << "Command: " << Arguments[1] << "not found." << std::endl;
+                std::cout << "Command: " << Arguments[1] << " not found." << std::endl;
             }
         }
         else
@@ -402,11 +314,6 @@ namespace Console
             "Type help (command name) (topic) to get help on a specific command";
     }
 
-    std::string Console::Help::Suggest(const std::vector<std::string>& Arguments) const
-    {
-        return "";
-    }
-
     // History
     Console::History::History()
     {
@@ -421,11 +328,7 @@ namespace Console
         SetTextColor(Color::Info);
         for( const auto &Command : Console::Instance()->PrevCommands )
         {
-            for( const auto &Arg : Command )
-            {
-                std::cout << Arg << ' ';
-            }
-            std::cout << std::endl;
+            std::cout << Command << std::endl;
         }
         return true;
     }
@@ -433,11 +336,6 @@ namespace Console
     std::string Console::History::Info(const std::string & Topic) const
     {
         return "Displays all previously entered commands";
-    }
-
-    std::string Console::History::Suggest(const std::vector<std::string>& Arguments) const
-    {
-        return "";
     }
 
     // Quit
@@ -458,11 +356,6 @@ namespace Console
     std::string Console::Quit::Info(const std::string & Topic) const
     {
         return "Quits the application";
-    }
-
-    std::string Console::Quit::Suggest(const std::vector<std::string>& Arguments) const
-    {
-        return "";
     }
 
     // Static Functions
