@@ -28,8 +28,9 @@ Thoth::Thoth()
     GetModuleFileNameA(nullptr, &Path[0], MAX_PATH);
     std::cout << "Process Module Path:\n\t" << Path.c_str() << std::endl;
     std::cout << std::hex << std::uppercase << std::setfill('0');
-    std::cout << "Thoth Thread ID: 0x" << GetCurrentThreadId() << std::endl;
     std::cout << "Process Base: 0x" << Util::Process::Base() << std::endl;
+    std::cout << "Thoth Thread ID: 0x" << GetCurrentThreadId() << std::endl;
+    std::cout << "Thoth Base: 0x" << Util::Process::GetModuleBase("Thoth.dll") << std::endl;
 
     // Push Commands
     //PushModule<Research>("research");
