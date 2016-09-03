@@ -273,23 +273,24 @@ namespace Console
 
     bool Console::Help::Run(const std::vector<std::string> &Arguments)
     {
-        if( Arguments.size() >= 2 )
+        if( Arguments.size() > 1 )
         {
-            if( Console::Instance()->Commands.count(Arguments[1]) )
+            for( auto it = Arguments.cbegin() + 1; it != Arguments.cend(); ++it )
             {
-                if( Arguments.size() == 3 )
+                if( Console::Instance()->Commands.count(*it) )
                 {
-                    std::cout << Console::Instance()->Commands[Arguments[1]]->Info() << std::endl;
+                    std::string Padded(*it);
+                    Padded.resize(Console::Instance()->ConsoleWidth / 2, '\xC4');
+                    SetTextColor(Color::Info);
+                    std::cout << Padded << std::endl;
+                    SetTextColor(Color::Info^Color::Bright);
+                    std::cout << Console::Instance()->Commands[*it]->Info() << std::endl;
                 }
                 else
                 {
-                    std::cout << Console::Instance()->Commands[Arguments[1]]->Info(Arguments.back()) << std::endl;
+                    SetTextColor(Color::Error);
+                    std::cout << "Command: " << *it << " not found." << std::endl;
                 }
-            }
-            else
-            {
-                SetTextColor(Color::Error);
-                std::cout << "Command: " << Arguments[1] << " not found." << std::endl;
             }
         }
         else
