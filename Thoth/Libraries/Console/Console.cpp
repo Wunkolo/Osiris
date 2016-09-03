@@ -29,7 +29,6 @@ namespace Console
         }
 
         SetTextColor(Color::Info);
-        CurCommand.push_back("");
 
         PushCommand("help", std::make_shared<Help>());
         PushCommand("history", std::make_shared<History>());
@@ -76,7 +75,10 @@ namespace Console
                 if( CurCommand.back().empty() )
                 {
                     CurCommand.pop_back();
-                    !CurArg || CurArg--;
+                    if( CurArg )
+                    {
+                        CurArg--;
+                    }
                 }
                 // Suggest
                 Suggestion.clear();
@@ -118,15 +120,13 @@ namespace Console
             // Clear previous suggestion
             if( !Suggestion.empty() )
             {
-                size_t i;
-                for( i = 0; i < Suggestion.length(); i++ )
-                {
-                    std::cout << ' ';
-                }
-                for( i = 0; i < Suggestion.length() + (CurCommand.size() > 1 ? 1 : 0); i++ )
-                {
-                    std::cout << '\b';
-                }
+                std::cout.width(Suggestion.length());
+                std::cout.fill(' ');
+                std::cout << "";
+
+                std::cout.width(Suggestion.length());
+                std::cout.fill('\b');
+                std::cout << "";
             }
 
             std::cout << ps1end << std::endl;
@@ -302,7 +302,10 @@ namespace Console
     void Console::PrintLine()
     {
         SetTextColor(Color::Info);
-        std::cout << '\r' << std::string(ConsoleWidth - 2, ' ') << '\r' << ps1beg;
+        std::cout << '\r';
+        std::cout.width(ConsoleWidth - 2);
+        std::cout.fill(' ');
+        std::cout << '\r' << ps1beg;
         SetTextColor(Color::Input);
 
         for( size_t i = 0; i < CurCommand.size(); i++ )
@@ -313,7 +316,9 @@ namespace Console
                 SetTextColor(Color::Suggestion);
                 std::cout << Suggestion;
                 // Go back
-                std::cout << std::string(Suggestion.length(), '\b');
+                std::cout.width(Suggestion.length());
+                std::cout.fill('\b');
+                std::cout << "";
 
                 // Print currently typed in command
                 SetTextColor(Color::Input);
@@ -381,7 +386,7 @@ namespace Console
             for( const auto &Command : Console::Instance()->Commands )
             {
                 std::string Padded(Command.first);
-                Padded.resize(Console::Instance()->ConsoleWidth >> 1, '\xC4');
+                Padded.resize(Console::Instance()->ConsoleWidth / 2, '\xC4');
                 SetTextColor(Color::Info);
                 std::cout << Padded << std::endl;
                 SetTextColor(Color::Info^Color::Bright);
