@@ -227,7 +227,7 @@ namespace Console
     {
         SetTextColor(Color::Info);
         std::cout << '\r';
-        std::cout.width(ConsoleWidth - 1);
+        std::cout.width(GetWidth() - 1);
         std::cout.fill(' ');
         std::cout << '\r' << ps1beg;
         SetTextColor(Color::Input);
