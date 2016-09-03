@@ -10,7 +10,7 @@ namespace Util
         Pointer GetModuleBase();
         Pointer GetModuleBase(const char* ModuleName);
 
-        inline static Pointer Base()
+        inline Pointer Base()
         {
             const static Pointer ProgramBase(GetModuleBase());
             return ProgramBase;
