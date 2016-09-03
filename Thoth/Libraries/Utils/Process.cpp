@@ -31,7 +31,7 @@ namespace Util
 
                 MODULEENTRY32 lpModuleEntry = { 0 };
                 lpModuleEntry.dwSize = sizeof(MODULEENTRY32);
-                int bRet = Module32First(hSnapShot, &lpModuleEntry);
+                int32_t bRet = Module32First(hSnapShot, &lpModuleEntry);
                 CloseHandle(hSnapShot);
                 CacheBase =
                     (bRet != 0) ?
@@ -39,7 +39,7 @@ namespace Util
                     : nullptr;
             }
 
-            return Pointer(Base);
+            return Pointer(CacheBase);
         }
 
         Pointer GetModuleBase(const char* ModuleName)
