@@ -23,7 +23,11 @@ namespace Util
 
         Pointer GetThreadLocalStorage(size_t Index)
         {
-            return Pointer();
+#ifdef _WIN64
+            return Pointer(__readgsdword(0x1480 + Index * 8));
+#else
+            return Pointer(__readgsdword(0x18))(0xE10).Read<uintptr_t>();
+#endif
         }
     }
 }
