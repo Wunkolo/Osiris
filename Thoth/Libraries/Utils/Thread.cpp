@@ -1,5 +1,7 @@
 #include "Thread.hpp"
 
+#include <Windows.h>
+
 namespace Util
 {
     namespace Thread
@@ -23,15 +25,16 @@ namespace Util
 
         Pointer GetThreadLocalStorage(size_t Index)
         {
-#ifdef _WIN64
-            return Pointer(
-                __readgsqword(0x1480 + static_cast<uint32_t>(Index) * 8)
-            );
-#else
-            return Pointer(
-                __readfsdword(0x18)
-            )(0xE10 + static_cast<uint32_t>(Index) * 4).Read<uintptr_t>();
-#endif
+            //#ifdef _WIN64
+            //            return Pointer(
+            //                __readgsqword(0x1480 + static_cast<uint32_t>(Index) * 8)
+            //            );
+            //#else
+            //            return Pointer(
+            //                __readfsdword(0x18)
+            //            )(0xE10 + static_cast<uint32_t>(Index) * 4).Read<uintptr_t>();
+            //#endif
+            return TlsGetValue(Index);
         }
     }
 }
