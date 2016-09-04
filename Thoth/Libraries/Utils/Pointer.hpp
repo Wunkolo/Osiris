@@ -9,15 +9,15 @@ namespace Util
     public:
         Pointer() = delete;
 
-        Pointer(void* Pointer) : Address(reinterpret_cast<std::uintptr_t>(Pointer))
+        Pointer(void* Pointer)
+            :
+            Address(
+                reinterpret_cast<std::uintptr_t>(Pointer)
+            )
         {
         }
 
         Pointer(std::uintptr_t Address) : Address(Address)
-        {
-        }
-
-        ~Pointer()
         {
         }
 
@@ -70,13 +70,19 @@ namespace Util
         // Templated Read/Write
 
         template <typename T>
-        inline T& Read() const
+        inline T& Get() const
         {
             return *(reinterpret_cast<T*>(Address));
         }
 
         template <typename T>
-        inline void Write(const T& Data)
+        inline const T& Read() const
+        {
+            return *(reinterpret_cast<T*>(Address));
+        }
+
+        template <typename T>
+        inline void Write(const T& Data) const
         {
             *Point<T>() = Data;
         }
