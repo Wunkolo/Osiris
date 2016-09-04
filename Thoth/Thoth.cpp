@@ -9,7 +9,7 @@
 
 //#include "Modules/ThothModules.hpp"
 
-#include <Utils/Process.hpp>
+#include <Utils/Utils.hpp>
 
 Thoth::Thoth()
 {
@@ -30,6 +30,7 @@ Thoth::Thoth()
     std::cout << std::hex << std::uppercase << std::setfill('0');
     std::cout << "Process Base: 0x" << Util::Process::Base() << std::endl;
     std::cout << "Thoth Thread ID: 0x" << GetCurrentThreadId() << std::endl;
+    std::cout << "Thoth Thread ID: 0x" << Util::Thread::GetCurrentThreadId() << std::endl;
     std::cout << "Thoth Base: 0x" << Util::Process::GetModuleBase("Thoth.dll") << std::endl;
 
     Util::Process::IterateModules(

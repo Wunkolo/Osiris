@@ -132,6 +132,7 @@
     <ClCompile Include="Libraries\Console\Console.cpp" />
     <ClCompile Include="Libraries\Utils\Checksum.cpp" />
     <ClCompile Include="Libraries\Utils\Process.cpp" />
+    <ClCompile Include="Libraries\Utils\Thread.cpp" />
     <ClCompile Include="Thoth.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -145,6 +146,7 @@
     <ClInclude Include="Libraries\Utils\Pointer.hpp" />
     <ClInclude Include="Libraries\Utils\Process.hpp" />
     <ClInclude Include="Libraries\Utils\Singleton.hpp" />
+    <ClInclude Include="Libraries\Utils\Thread.hpp" />
     <ClInclude Include="Thoth.hpp" />
     <ClInclude Include="Libraries\Utils\Utils.hpp" />
   </ItemGroup>

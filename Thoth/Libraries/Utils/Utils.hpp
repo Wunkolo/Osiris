@@ -5,6 +5,7 @@
 #include "Checksum.hpp"
 
 #include "Process.hpp"
+#include "Thread.hpp"
 #include "Pointer.hpp"
 
 #include "Singleton.hpp"
