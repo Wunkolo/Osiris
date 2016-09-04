@@ -32,6 +32,22 @@ Thoth::Thoth()
     std::cout << "Thoth Thread ID: 0x" << GetCurrentThreadId() << std::endl;
     std::cout << "Thoth Base: 0x" << Util::Process::GetModuleBase("Thoth.dll") << std::endl;
 
+    Util::Process::IterateModules(
+        [](
+            const char* Name,
+            const char* Path,
+            Util::Pointer Base,
+            size_t Size
+            ) -> bool
+    {
+        std::cout << Name << std::endl;
+        std::cout << Path << std::endl;
+        std::cout << std::setw(8) << Base << std::endl;
+        std::cout << Size << std::endl;
+        return true;
+    }
+    );
+
     // Push Commands
     //PushModule<Research>("research");
     //PushModule<Player>("player");
