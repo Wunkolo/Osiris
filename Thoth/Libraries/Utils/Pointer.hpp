@@ -72,26 +72,35 @@ namespace Util
         template <typename T>
         inline T& Get() const
         {
-            return *(reinterpret_cast<T*>(Address));
+            return *Point<T>();
         }
 
         template <typename T>
         inline const T& Read() const
         {
-            return *(reinterpret_cast<T*>(Address));
+            return Get<T>();
+        }
+
+        inline void Read(void *Destination, size_t Count) const
+        {
+            std::copy_n(
+                Point<uint8_t>(),
+                Count,
+                reinterpret_cast<uint8_t*>(Destination)
+            );
         }
 
         template <typename T>
         inline void Write(const T& Data) const
         {
-            *Point<T>() = Data;
+            Get<T>() = Data;
         }
 
-        inline void Write(const void* Data, size_t Size) const
+        inline void Write(const void *Data, size_t Size) const
         {
-            std::copy(
+            std::copy_n(
                 reinterpret_cast<const uint8_t*>(Data),
-                reinterpret_cast<const uint8_t*>(Data) + Size,
+                Size,
                 Point<uint8_t>()
             );
         }
