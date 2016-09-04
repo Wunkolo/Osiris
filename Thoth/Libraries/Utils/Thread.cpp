@@ -34,7 +34,7 @@ namespace Util
             //                __readfsdword(0x18)
             //            )(0xE10 + static_cast<uint32_t>(Index) * 4).Read<uintptr_t>();
             //#endif
-            return TlsGetValue(Index);
+            return TlsGetValue(static_cast<uint32_t>(Index));
         }
     }
 }
