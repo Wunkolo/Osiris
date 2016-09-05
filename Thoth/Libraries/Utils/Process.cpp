@@ -1,7 +1,7 @@
 #include "Process.hpp"
 
 #include <Windows.h>
-#include <TlHelp32.h> //GetModuleBase
+#include <TlHelp32.h>
 
 namespace Util
 {
