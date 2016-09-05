@@ -71,11 +71,11 @@ namespace Util
             return nullptr;
         }
 
-        void IterateModules(ModuleCallback ModuleProc)
+        void IterateModules(ModuleCallback ModuleProc, uint32_t ProcessID)
         {
             void* hSnapShot = CreateToolhelp32Snapshot(
                 TH32CS_SNAPMODULE,
-                GetCurrentProcessId()
+                ProcessID
             );
 
             if( hSnapShot == INVALID_HANDLE_VALUE )

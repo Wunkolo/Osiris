@@ -26,7 +26,8 @@ namespace Util
 
         // Iterates all modules of the current process
         void IterateModules(
-            ModuleCallback ModuleProc
+            ModuleCallback ModuleProc,
+            uint32_t ProcessID = GetProcessID()
         );
     }
 }
