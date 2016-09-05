@@ -1,6 +1,7 @@
 #include "Thread.hpp"
 
 #include <Windows.h>
+#include <TlHelp32.h>
 
 namespace Util
 {
@@ -35,6 +36,39 @@ namespace Util
             //            )(0xE10 + static_cast<uint32_t>(Index) * 4).Read<uintptr_t>();
             //#endif
             return TlsGetValue(static_cast<uint32_t>(Index));
+        }
+
+        void IterateThreads(ThreadCallback ThreadProc, uint32_t ProcessID)
+        {
+            void* hSnapShot = CreateToolhelp32Snapshot(
+                TH32CS_SNAPTHREAD,
+                ProcessID
+            );
+
+            if( hSnapShot == INVALID_HANDLE_VALUE )
+            {
+                return;
+            }
+
+            THREADENTRY32 ThreadEntry = { 0 };
+            ThreadEntry.dwSize = sizeof(THREADENTRY32);
+            Thread32First(hSnapShot, &ThreadEntry);
+            do
+            {
+                if( ThreadEntry.th32OwnerProcessID == ProcessID )
+                {
+                    bool Continue = ThreadProc(
+                        ThreadEntry.th32ThreadID
+                    );
+                    if( Continue == false )
+                    {
+                        break;
+                    }
+                }
+            } while( Thread32Next(hSnapShot, &ThreadEntry) );
+
+            CloseHandle(hSnapShot);
+            return;
         }
     }
 }

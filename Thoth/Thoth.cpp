@@ -33,18 +33,31 @@ Thoth::Thoth()
     std::cout << "Thoth Thread ID: 0x" << Util::Thread::GetCurrentThreadId() << std::endl;
     std::cout << "Thoth Base: 0x" << Util::Process::GetModuleBase("Thoth.dll") << std::endl;
 
-    Util::Process::IterateModules(
+    //Util::Process::IterateModules(
+    //    [](
+    //        const char* Name,
+    //        const char* Path,
+    //        Util::Pointer Base,
+    //        size_t Size
+    //        ) -> bool
+    //{
+    //    std::cout << Name << std::endl;
+    //    std::cout << Path << std::endl;
+    //    std::cout << std::setw(8) << Base << std::endl;
+    //    std::cout << Size << std::endl;
+    //    return true;
+    //}
+    //);
+
+    Util::Thread::IterateThreads(
         [](
-            const char* Name,
-            const char* Path,
-            Util::Pointer Base,
-            size_t Size
+            uint32_t ThreadID
             ) -> bool
     {
-        std::cout << Name << std::endl;
-        std::cout << Path << std::endl;
-        std::cout << std::setw(8) << Base << std::endl;
-        std::cout << Size << std::endl;
+        static uint32_t honk = 0;
+        honk++;
+        std::cout << "#" << honk << std::endl;
+        std::cout << "ThreadID: " << std::setw(8) << ThreadID << std::endl;
         return true;
     }
     );
