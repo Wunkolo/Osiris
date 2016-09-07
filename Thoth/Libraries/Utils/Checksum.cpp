@@ -8,13 +8,13 @@ namespace Util
         {
             const uint16_t Polynomial = 0x8408;
             uint16_t Crc = ~PrevCrc;
-            uint8_t* Current = (uint8_t*)Data;
+            const uint8_t* Current = reinterpret_cast<const uint8_t*>(Data);
             while( Length-- )
             {
                 Crc ^= *Current++;
                 for( uint8_t i = 0; i < 8; i++ )
                 {
-                    Crc = (Crc >> 1) ^ (-int16_t(Crc & 1) & Polynomial);
+                    Crc = (Crc >> 1) ^ (-static_cast<int16_t>(Crc & 1) & Polynomial);
                 }
             }
             return ~Crc;
@@ -24,13 +24,13 @@ namespace Util
         {
             const uint32_t Polynomial = 0xEDB88320;
             uint32_t Crc = ~PrevCrc;
-            uint8_t* Current = (uint8_t*)Data;
+            const uint8_t* Current = reinterpret_cast<const uint8_t*>(Data);
             while( Length-- )
             {
                 Crc ^= *Current++;
                 for( uint8_t i = 0; i < 8; i++ )
                 {
-                    Crc = (Crc >> 1) ^ (-int32_t(Crc & 1) & Polynomial);
+                    Crc = (Crc >> 1) ^ (-static_cast<int32_t>(Crc & 1) & Polynomial);
                 }
             }
 
@@ -39,7 +39,7 @@ namespace Util
 
         uint16_t Fletcher16(const void* Data, size_t Length)
         {
-            register uint16_t sum1, sum2;
+            uint16_t sum1, sum2;
             sum1 = sum2 = 0;
             for( size_t i = 0; i < Length; ++i )
             {
@@ -121,12 +121,12 @@ namespace Util
 
         uint32_t Murmur32(const void* Data, uint32_t Length, uint32_t Seed)
         {
-            static const uint32_t C1 = 0xCC9E2D51;
-            static const uint32_t C2 = 0x1B873593;
-            static const uint32_t R1 = 15;
-            static const uint32_t R2 = 13;
-            static const uint32_t M = 5;
-            static const uint32_t N = 0xE6546B64;
+            const uint32_t C1 = 0xCC9E2D51;
+            const uint32_t C2 = 0x1B873593;
+            const uint32_t R1 = 15;
+            const uint32_t R2 = 13;
+            const uint32_t M = 5;
+            const uint32_t N = 0xE6546B64;
             uint32_t K1 = 0;
 
             uint32_t Hash = Seed;
