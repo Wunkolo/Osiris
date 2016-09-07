@@ -19,7 +19,6 @@
 #include <ShObjIdl.h>
 
 const char* DLLFile = "Thoth.dll";
-const char* ClassName = "Notepad";
 
 const char* ApplicationUserModelID = "Microsoft.Halo5Forge_8wekyb3d8bbwe!Ausar";
 const char* PackageID = "Microsoft.Halo5Forge_1.114.4592.2_x64__8wekyb3d8bbwe";
@@ -33,77 +32,61 @@ bool LaunchAppUWP(std::string &PackageName, uint32_t *ProcessID);
 
 int main()
 {
-    uint32_t Process = 0;
+    uint32_t ProcessID = 0;
 
     CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-    LaunchAppUWP(std::string(ApplicationUserModelID), &Process);
+    LaunchAppUWP(std::string(ApplicationUserModelID), &ProcessID);
     CoUninitialize();
 
-    std::cout << Process << std::endl;
-    //void* hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
-    //SetConsoleOutputCP(437);
+    void* hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleOutputCP(437);
 
-    //size_t ConsoleWidth = 80;
-    //CONSOLE_SCREEN_BUFFER_INFO ConsoleBuf;
-    //if( GetConsoleScreenBufferInfo(hStdout, &ConsoleBuf) )
-    //{
-    //    ConsoleWidth = ConsoleBuf.dwSize.X;
-    //}
+    size_t ConsoleWidth = 80;
+    CONSOLE_SCREEN_BUFFER_INFO ConsoleBuf;
+    if( GetConsoleScreenBufferInfo(hStdout, &ConsoleBuf) )
+    {
+        ConsoleWidth = ConsoleBuf.dwSize.X;
+    }
 
-    //SetConsoleTextAttribute(hStdout,
-    //    FOREGROUND_RED |
-    //    FOREGROUND_GREEN |
-    //    FOREGROUND_INTENSITY);
-    //std::cout << "Thoth Injector Build date (" << __DATE__ << " : " << __TIME__ << ")" << std::endl;
-    //SetConsoleTextAttribute(hStdout,
-    //    FOREGROUND_BLUE |
-    //    FOREGROUND_GREEN |
-    //    FOREGROUND_INTENSITY);
-    //std::cout << "\t-Wunkolo (Wunkolo@gmail.com)\n";
-    //SetConsoleTextAttribute(hStdout,
-    //    FOREGROUND_RED |
-    //    FOREGROUND_BLUE);
-    //std::cout << std::string(ConsoleWidth - 1, '-') << std::endl;
-    //SetConsoleTextAttribute(hStdout,
-    //    FOREGROUND_RED |
-    //    FOREGROUND_GREEN |
-    //    FOREGROUND_INTENSITY);
+    SetConsoleTextAttribute(hStdout,
+        FOREGROUND_RED |
+        FOREGROUND_GREEN |
+        FOREGROUND_INTENSITY);
+    std::cout << "Thoth Injector Build date (" << __DATE__ << " : " << __TIME__ << ")" << std::endl;
+    SetConsoleTextAttribute(hStdout,
+        FOREGROUND_BLUE |
+        FOREGROUND_GREEN |
+        FOREGROUND_INTENSITY);
+    std::cout << "\t-Wunkolo (Wunkolo@gmail.com)\n";
+    SetConsoleTextAttribute(hStdout,
+        FOREGROUND_RED |
+        FOREGROUND_BLUE);
+    std::cout << std::string(ConsoleWidth - 1, '-') << std::endl;
+    SetConsoleTextAttribute(hStdout,
+        FOREGROUND_RED |
+        FOREGROUND_GREEN |
+        FOREGROUND_INTENSITY);
 
-    //SetConsoleTextAttribute(hStdout, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
-    //std::cout << "Looking for open process..." << std::endl;
-    //std::string CurrentDirectory(MAX_PATH, 0);
-    //CurrentDirectory.resize(GetCurrentDirectoryA(MAX_PATH, &CurrentDirectory[0]));
+    std::string CurrentDirectory(MAX_PATH, 0);
+    CurrentDirectory.resize(GetCurrentDirectoryA(MAX_PATH, &CurrentDirectory[0]));
 
-    //DWORD ProcessID;
-    //HWND ProcessWindow;
-    //ProcessWindow = FindWindowA(ClassName, nullptr);
-    //if( ProcessWindow == NULL )
-    //{
-    //    SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
-    //    std::cout << "Process not found (Error code: " << std::dec << GetLastError() << ")" << std::endl;
-    //    system("pause");
-    //    return 1;
-    //}
-    //SetConsoleTextAttribute(hStdout, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-    //std::cout << "Process found" << std::endl;
-    //GetWindowThreadProcessId(ProcessWindow, &ProcessID);
+    SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    std::cout << "Injecting "
+        << CurrentDirectory << "\\" << DLLFile
+        << " into process ID " << ProcessID << ": ";
 
-    //SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-    //std::cout << "Injecting "
-    //    << CurrentDirectory << "\\" << DLLFile
-    //    << " into process ID " << ProcessID << ": ";
-    //if( DLLInjectRemote(ProcessID, CurrentDirectory + "\\" + DLLFile) )
-    //{
-    //    SetConsoleTextAttribute(hStdout, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-    //    std::cout << "Success!" << std::endl;
-    //    return 0;
-    //}
-    //else
-    //{
-    //    SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
-    //    std::cout << "Failed" << std::endl;
-    //}
-    //system("pause");
+    if( DLLInjectRemote(ProcessID, CurrentDirectory + "\\" + DLLFile) )
+    {
+        SetConsoleTextAttribute(hStdout, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+        std::cout << "Success!" << std::endl;
+        return 0;
+    }
+    else
+    {
+        SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
+        std::cout << "Failed" << std::endl;
+    }
+    system("pause");
     return 0;
 }
 
