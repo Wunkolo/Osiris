@@ -17,71 +17,7 @@ const char* ClassName = "Notepad";
 // UWP apps require DLLS with "ALL APPLICATION PACKAGES" group
 void SetAccessControl(std::string ExecutableName);
 
-bool DLLInjectRemote(uint32_t ProcessID, const std::string& DLLpath)
-{
-    if( !ProcessID )
-    {
-        return false;
-    }
-
-    if( GetFileAttributes(DLLpath.c_str()) == INVALID_FILE_ATTRIBUTES )
-    {
-        std::cout << "DLL file: " << DLLpath << " does not exists" << std::endl;
-        return false;
-    }
-
-    SetAccessControl(DLLpath);
-
-    void* ProcLoadLibrary = reinterpret_cast<void*>(GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA"));
-    if( !ProcLoadLibrary )
-    {
-        return false;
-    }
-
-    void* Process = OpenProcess(
-        PROCESS_VM_OPERATION | PROCESS_VM_WRITE |
-        PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION |
-        PROCESS_VM_READ,
-        false,
-        ProcessID);
-    if( !Process )
-    {
-        return false;
-    }
-    void* Alloc = reinterpret_cast<void*>(VirtualAllocEx(
-        Process,
-        nullptr,
-        DLLpath.length() + 1,
-        MEM_RESERVE | MEM_COMMIT,
-        PAGE_READWRITE));
-    if( !Alloc )
-    {
-        return false;
-    }
-    WriteProcessMemory(Process, Alloc, DLLpath.c_str(), DLLpath.length() + 1, nullptr);
-
-    void* RemoteThread =
-        CreateRemoteThread(
-            Process,
-            nullptr,
-            0,
-            (LPTHREAD_START_ROUTINE)ProcLoadLibrary,
-            Alloc,
-            0,
-            0);
-
-    bool Result = false;
-
-    // Wait for remote thread to finish
-    if( RemoteThread )
-    {
-        Result = WaitForSingleObject(RemoteThread, 10000) != WAIT_TIMEOUT;
-    }
-
-    VirtualFreeEx(Process, Alloc, 0, MEM_RELEASE);
-    CloseHandle(Process);
-    return Result;
-}
+bool DLLInjectRemote(uint32_t ProcessID, const std::string& DLLpath);
 
 int main()
 {
@@ -212,4 +148,70 @@ void SetAccessControl(std::string ExecutableName)
             reinterpret_cast<HLOCAL>(AccessControlNew)
         );
     }
+}
+
+bool DLLInjectRemote(uint32_t ProcessID, const std::string& DLLpath)
+{
+    if( !ProcessID )
+    {
+        return false;
+    }
+
+    if( GetFileAttributes(DLLpath.c_str()) == INVALID_FILE_ATTRIBUTES )
+    {
+        std::cout << "DLL file: " << DLLpath << " does not exists" << std::endl;
+        return false;
+    }
+
+    SetAccessControl(DLLpath);
+
+    void* ProcLoadLibrary = reinterpret_cast<void*>(GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA"));
+    if( !ProcLoadLibrary )
+    {
+        return false;
+    }
+
+    void* Process = OpenProcess(
+        PROCESS_VM_OPERATION | PROCESS_VM_WRITE |
+        PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION |
+        PROCESS_VM_READ,
+        false,
+        ProcessID);
+    if( !Process )
+    {
+        return false;
+    }
+    void* Alloc = reinterpret_cast<void*>(VirtualAllocEx(
+        Process,
+        nullptr,
+        DLLpath.length() + 1,
+        MEM_RESERVE | MEM_COMMIT,
+        PAGE_READWRITE));
+    if( !Alloc )
+    {
+        return false;
+    }
+    WriteProcessMemory(Process, Alloc, DLLpath.c_str(), DLLpath.length() + 1, nullptr);
+
+    void* RemoteThread =
+        CreateRemoteThread(
+            Process,
+            nullptr,
+            0,
+            (LPTHREAD_START_ROUTINE)ProcLoadLibrary,
+            Alloc,
+            0,
+            0);
+
+    bool Result = false;
+
+    // Wait for remote thread to finish
+    if( RemoteThread )
+    {
+        Result = WaitForSingleObject(RemoteThread, 10000) != WAIT_TIMEOUT;
+    }
+
+    VirtualFreeEx(Process, Alloc, 0, MEM_RELEASE);
+    CloseHandle(Process);
+    return Result;
 }
