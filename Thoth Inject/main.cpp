@@ -6,25 +6,16 @@
 #include <conio.h>
 #include <psapi.h> //GetModuleFileNameEx
 
+// Setting DLL access controls
+#include <AccCtrl.h>
+#include <Aclapi.h>
+#include <Sddl.h>
+
 const char* DLLFile = "Thoth.dll";
 const char* ClassName = "Notepad";
 
-uint32_t Crc32(const void* Data, size_t Length, uint32_t PrevCrc = 0)
-{
-    const uint32_t Polynomial = 0xEDB88320;
-    uint32_t Crc = ~PrevCrc;
-    const uint8_t* Current = reinterpret_cast<const uint8_t*>(Data);
-    while( Length-- )
-    {
-        Crc ^= *Current++;
-        for( uint8_t i = 0; i < 8; i++ )
-        {
-            Crc = (Crc >> 1) ^ (-int32_t(Crc & 1) & Polynomial);
-        }
-    }
-
-    return ~Crc;
-}
+// UWP apps require DLLS with "ALL APPLICATION PACKAGES" group
+void SetAccessControl(std::string ExecutableName);
 
 bool DLLInjectRemote(uint32_t ProcessID, const std::string& DLLpath)
 {
@@ -38,6 +29,8 @@ bool DLLInjectRemote(uint32_t ProcessID, const std::string& DLLpath)
         std::cout << "DLL file: " << DLLpath << " does not exists" << std::endl;
         return false;
     }
+
+    SetAccessControl(DLLpath);
 
     void* ProcLoadLibrary = reinterpret_cast<void*>(GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA"));
     if( !ProcLoadLibrary )
@@ -157,4 +150,66 @@ int main()
     }
     system("pause");
     return 0;
+}
+
+void SetAccessControl(std::string ExecutableName)
+{
+    PSECURITY_DESCRIPTOR SecurityDescriptor = nullptr;
+    EXPLICIT_ACCESS ExplicitAccess = { 0 };
+
+    PACL AccessControlCurrent = nullptr;
+    PACL AccessControlNew = nullptr;
+
+    SECURITY_INFORMATION SecurityInfo = DACL_SECURITY_INFORMATION;
+    PSID SecurityIdentifier;
+
+    if( GetNamedSecurityInfoA(
+        ExecutableName.c_str(),
+        SE_FILE_OBJECT,
+        DACL_SECURITY_INFORMATION,
+        nullptr,
+        nullptr,
+        &AccessControlCurrent,
+        nullptr,
+        &SecurityDescriptor) == ERROR_SUCCESS )
+    {
+        ConvertStringSidToSidA("S-1-15-2-1", &SecurityIdentifier);
+        if( SecurityIdentifier != nullptr )
+        {
+            ExplicitAccess.grfAccessPermissions = GENERIC_READ | GENERIC_EXECUTE;
+            ExplicitAccess.grfAccessMode = SET_ACCESS;
+            ExplicitAccess.grfInheritance = SUB_CONTAINERS_AND_OBJECTS_INHERIT;
+            ExplicitAccess.Trustee.TrusteeForm = TRUSTEE_IS_SID;
+            ExplicitAccess.Trustee.TrusteeType = TRUSTEE_IS_WELL_KNOWN_GROUP;
+            ExplicitAccess.Trustee.ptstrName = reinterpret_cast<char*>(SecurityIdentifier);
+
+            if( SetEntriesInAclA(
+                1,
+                &ExplicitAccess,
+                AccessControlCurrent,
+                &AccessControlNew) == ERROR_SUCCESS )
+            {
+                SetNamedSecurityInfoA(
+                    const_cast<char*>(ExecutableName.c_str()),
+                    SE_FILE_OBJECT,
+                    SecurityInfo,
+                    nullptr,
+                    nullptr,
+                    AccessControlNew,
+                    nullptr);
+            };
+        }
+    }
+    if( SecurityDescriptor )
+    {
+        LocalFree(
+            reinterpret_cast<HLOCAL>(SecurityDescriptor)
+        );
+    }
+    if( AccessControlNew )
+    {
+        LocalFree(
+            reinterpret_cast<HLOCAL>(AccessControlNew)
+        );
+    }
 }
