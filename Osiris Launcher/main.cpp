@@ -18,24 +18,24 @@
 #include <atlbase.h>
 #include <ShObjIdl.h>
 
-const char* DLLFile = "Osiris.dll";
+const wchar_t* DLLFile = L"Osiris.dll";
 
-const char* ApplicationUserModelID = "Microsoft.Halo5Forge_8wekyb3d8bbwe!Ausar";
-const char* PackageID = "Microsoft.Halo5Forge_1.114.4592.2_x64__8wekyb3d8bbwe";
+const wchar_t* ApplicationUserModelID = L"Microsoft.Halo5Forge_8wekyb3d8bbwe!Ausar";
+const wchar_t* PackageID = L"Microsoft.Halo5Forge_1.114.4592.2_x64__8wekyb3d8bbwe";
 
 // UWP apps require DLLS with "ALL APPLICATION PACKAGES" group
-void SetAccessControl(std::string ExecutableName);
+void SetAccessControl(std::wstring ExecutableName);
 
-bool DLLInjectRemote(uint32_t ProcessID, const std::string& DLLpath);
+uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath);
 
-bool LaunchAppUWP(std::string &PackageName, uint32_t *ProcessID);
+bool LaunchAppUWP(std::wstring &PackageName, uint32_t *ProcessID);
 
 int main()
 {
     uint32_t ProcessID = 0;
 
     CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-    LaunchAppUWP(std::string(ApplicationUserModelID), &ProcessID);
+    LaunchAppUWP(ApplicationUserModelID, &ProcessID);
     CoUninitialize();
 
     void* hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -52,30 +52,30 @@ int main()
         FOREGROUND_RED |
         FOREGROUND_GREEN |
         FOREGROUND_INTENSITY);
-    std::cout << "Osiris Injector Build date (" << __DATE__ << " : " << __TIME__ << ")" << std::endl;
+    std::wcout << "Osiris Injector Build date (" << __DATE__ << " : " << __TIME__ << ")" << std::endl;
     SetConsoleTextAttribute(hStdout,
         FOREGROUND_BLUE |
         FOREGROUND_GREEN |
         FOREGROUND_INTENSITY);
-    std::cout << "\t-Wunkolo (Wunkolo@gmail.com)\n";
+    std::wcout << "\t-Wunkolo (Wunkolo@gmail.com)\n";
     SetConsoleTextAttribute(hStdout,
         FOREGROUND_RED |
         FOREGROUND_BLUE);
-    std::cout << std::string(ConsoleWidth - 1, '-') << std::endl;
+    std::wcout << std::wstring(ConsoleWidth - 1, '-') << std::endl;
     SetConsoleTextAttribute(hStdout,
         FOREGROUND_RED |
         FOREGROUND_GREEN |
         FOREGROUND_INTENSITY);
 
-    std::string CurrentDirectory(MAX_PATH, 0);
-    CurrentDirectory.resize(GetCurrentDirectoryA(MAX_PATH, &CurrentDirectory[0]));
+    std::wstring CurrentDirectory(MAX_PATH, 0);
+    CurrentDirectory.resize(GetCurrentDirectoryW(MAX_PATH, &CurrentDirectory[0]));
 
     SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-    std::cout << "Injecting "
+    std::wcout << "Injecting "
         << CurrentDirectory << "\\" << DLLFile
         << " into process ID " << ProcessID << ": ";
 
-    if( DLLInjectRemote(ProcessID, CurrentDirectory + "\\" + DLLFile) )
+    if( DLLInjectRemote(ProcessID, CurrentDirectory + L"\\" + DLLFile) )
     {
         SetConsoleTextAttribute(hStdout, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
         std::cout << "Success!" << std::endl;
@@ -90,7 +90,7 @@ int main()
     return 0;
 }
 
-void SetAccessControl(std::string ExecutableName)
+void SetAccessControl(std::wstring ExecutableName)
 {
     PSECURITY_DESCRIPTOR SecurityDescriptor = nullptr;
     EXPLICIT_ACCESS ExplicitAccess = { 0 };
@@ -101,7 +101,7 @@ void SetAccessControl(std::string ExecutableName)
     SECURITY_INFORMATION SecurityInfo = DACL_SECURITY_INFORMATION;
     PSID SecurityIdentifier;
 
-    if( GetNamedSecurityInfoA(
+    if( GetNamedSecurityInfoW(
         ExecutableName.c_str(),
         SE_FILE_OBJECT,
         DACL_SECURITY_INFORMATION,
@@ -127,8 +127,8 @@ void SetAccessControl(std::string ExecutableName)
                 AccessControlCurrent,
                 &AccessControlNew) == ERROR_SUCCESS )
             {
-                SetNamedSecurityInfoA(
-                    const_cast<char*>(ExecutableName.c_str()),
+                SetNamedSecurityInfoW(
+                    const_cast<wchar_t*>(ExecutableName.c_str()),
                     SE_FILE_OBJECT,
                     SecurityInfo,
                     nullptr,
@@ -152,16 +152,17 @@ void SetAccessControl(std::string ExecutableName)
     }
 }
 
-bool DLLInjectRemote(uint32_t ProcessID, const std::string& DLLpath)
+uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath)
 {
+    uint32_t Result = 0;
     if( !ProcessID )
     {
         return false;
     }
 
-    if( GetFileAttributes(DLLpath.c_str()) == INVALID_FILE_ATTRIBUTES )
+    if( GetFileAttributesW(DLLpath.c_str()) == INVALID_FILE_ATTRIBUTES )
     {
-        std::cout << "DLL file: " << DLLpath << " does not exists" << std::endl;
+        std::wcout << "DLL file: " << DLLpath << " does not exists" << std::endl;
         return false;
     }
 
@@ -170,6 +171,7 @@ bool DLLInjectRemote(uint32_t ProcessID, const std::string& DLLpath)
     void* ProcLoadLibrary = reinterpret_cast<void*>(GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA"));
     if( !ProcLoadLibrary )
     {
+        std::wcout << "Unable to find LoadLibraryA procedure" << std::endl;
         return false;
     }
 
@@ -181,6 +183,7 @@ bool DLLInjectRemote(uint32_t ProcessID, const std::string& DLLpath)
         ProcessID);
     if( !Process )
     {
+        std::wcout << "Unable to open process for writing" << std::endl;
         return false;
     }
     void* Alloc = reinterpret_cast<void*>(VirtualAllocEx(
@@ -191,9 +194,15 @@ bool DLLInjectRemote(uint32_t ProcessID, const std::string& DLLpath)
         PAGE_READWRITE));
     if( !Alloc )
     {
+        std::wcout << "Unable to remotely allocate memory" << std::endl;
         return false;
     }
-    WriteProcessMemory(Process, Alloc, DLLpath.c_str(), DLLpath.length() + 1, nullptr);
+    Result = WriteProcessMemory(Process, Alloc, DLLpath.c_str(), DLLpath.length() + 1, nullptr);
+
+    if( Result == 0 )
+    {
+        std::wcout << "Unable to write process memory" << std::endl;
+    }
 
     void* RemoteThread =
         CreateRemoteThread(
@@ -205,12 +214,16 @@ bool DLLInjectRemote(uint32_t ProcessID, const std::string& DLLpath)
             0,
             0);
 
-    bool Result = false;
-
     // Wait for remote thread to finish
     if( RemoteThread )
     {
-        Result = WaitForSingleObject(RemoteThread, 10000) != WAIT_TIMEOUT;
+        WaitForSingleObject(RemoteThread, 10000);
+    }
+    else
+    {
+        // Failed to create thread
+        std::cout << "Unable to create remote thread" << std::endl;
+        return 0;
     }
 
     VirtualFreeEx(Process, Alloc, 0, MEM_RELEASE);
@@ -218,13 +231,9 @@ bool DLLInjectRemote(uint32_t ProcessID, const std::string& DLLpath)
     return Result;
 }
 
-bool LaunchAppUWP(std::string &PackageName, uint32_t *ProcessID)
+bool LaunchAppUWP(const std::wstring &PackageID, uint32_t *ProcessID)
 {
     CComPtr<IApplicationActivationManager> ApplicationManager;
-
-    std::wstring_convert < std::codecvt_utf8_utf16<wchar_t>> Widener;
-
-    std::wstring WidePackageName = Widener.from_bytes(PackageName);
 
     if(
         CoCreateInstance(
@@ -242,7 +251,7 @@ bool LaunchAppUWP(std::string &PackageName, uint32_t *ProcessID)
         );
         // Launch
         ApplicationManager->ActivateApplication(
-            WidePackageName.c_str(),
+            PackageID.c_str(),
             nullptr,
             AO_NONE,
             reinterpret_cast<DWORD*>(ProcessID)
