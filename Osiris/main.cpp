@@ -23,7 +23,6 @@ uint32_t __stdcall OsirisThread(void*)
     {
         []()
         {
-            Console::AllocateConsole("Osiris");
             std::chrono::high_resolution_clock::time_point PrevTime, CurTime;
             CurTime = std::chrono::high_resolution_clock::now();
             while( true )
