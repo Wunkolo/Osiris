@@ -28,14 +28,36 @@ void SetAccessControl(std::wstring ExecutableName);
 
 uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath);
 
-bool LaunchAppUWP(std::wstring &PackageName, uint32_t *ProcessID);
+bool LaunchAppUWP(const std::wstring &PackageName, uint32_t *ProcessID);
 
 int main()
 {
     uint32_t ProcessID = 0;
 
-    CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+    CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+
+    CComQIPtr<IPackageDebugSettings> DebugSettings;
+
+    DebugSettings.CoCreateInstance(
+        CLSID_PackageDebugSettings,
+        nullptr,
+        CLSCTX_ALL
+    );
+
+    DebugSettings->EnableDebugging(
+        PackageID,
+        nullptr,
+        nullptr
+    );
+
+    std::wcout << "Launching Halo 5: Forge...";
+
     LaunchAppUWP(ApplicationUserModelID, &ProcessID);
+    std::wcout << "Launched" << std::endl;
+
+    DebugSettings->Suspend(PackageID);
+    DebugSettings.Release();
+
     CoUninitialize();
 
     void* hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
