@@ -5,16 +5,16 @@
 
 #include <conio.h> // _getch()
 
-#include "Thoth.hpp"
+#include "Osiris.hpp"
 
-//#include "Modules/ThothModules.hpp"
+//#include "Modules/OsirisModules.hpp"
 
 #include <Utils/Utils.hpp>
 
-Thoth::Thoth()
+Osiris::Osiris()
 {
     Console::SetTextColor(Console::Color::Info);
-    std::cout << "Thoth" << "\xC4\xC4\xC4\xC2 ";
+    std::cout << "Osiris" << "\xC4\xC4\xC4\xC2 ";
     std::cout << '[' << __DATE__ << " : " << __TIME__ << ']' << std::endl;
     Console::SetTextColor(Console::Color::Cyan | Console::Color::Bright);
     std::cout << "\t\xC0Wunkolo (Wunkolo@gmail.com)\n";
@@ -29,9 +29,9 @@ Thoth::Thoth()
     std::cout << "Process Module Path:\n\t" << Path.c_str() << std::endl;
     std::cout << std::hex << std::uppercase << std::setfill('0');
     std::cout << "Process Base: 0x" << Util::Process::Base() << std::endl;
-    std::cout << "Thoth Thread ID: 0x" << GetCurrentThreadId() << std::endl;
-    std::cout << "Thoth Thread ID: 0x" << Util::Thread::GetCurrentThreadId() << std::endl;
-    std::cout << "Thoth Base: 0x" << Util::Process::GetModuleBase("Thoth.dll") << std::endl;
+    std::cout << "Osiris Thread ID: 0x" << GetCurrentThreadId() << std::endl;
+    std::cout << "Osiris Thread ID: 0x" << Util::Thread::GetCurrentThreadId() << std::endl;
+    std::cout << "Osiris Base: 0x" << Util::Process::GetModuleBase("Osiris.dll") << std::endl;
 
     //Util::Process::IterateModules(
     //    [](
@@ -68,18 +68,18 @@ Thoth::Thoth()
     Console::Console::Instance()->PrintLine();
 }
 
-Thoth::~Thoth()
+Osiris::~Osiris()
 {
 }
 
-void Thoth::Tick(const std::chrono::high_resolution_clock::duration &DeltaTime)
+void Osiris::Tick(const std::chrono::high_resolution_clock::duration &DeltaTime)
 {
     if( _kbhit() )
     {
         Console::Console::Instance()->HandleInput(_getch());
         Console::Console::Instance()->PrintLine();
     }
-    for( std::pair<std::string, std::shared_ptr<ThothModule>> Command : Commands )
+    for( std::pair<std::string, std::shared_ptr<OsirisModule>> Command : Commands )
     {
         if( Command.second )
         {

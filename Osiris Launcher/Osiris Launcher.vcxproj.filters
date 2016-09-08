@@ -18,12 +18,12 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ThothDebugger.cpp">
+    <ClCompile Include="OsirisDebugger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ThothDebugger.hpp">
+    <ClInclude Include="OsirisDebugger.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

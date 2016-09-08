@@ -18,7 +18,7 @@
 #include <atlbase.h>
 #include <ShObjIdl.h>
 
-const char* DLLFile = "Thoth.dll";
+const char* DLLFile = "Osiris.dll";
 
 const char* ApplicationUserModelID = "Microsoft.Halo5Forge_8wekyb3d8bbwe!Ausar";
 const char* PackageID = "Microsoft.Halo5Forge_1.114.4592.2_x64__8wekyb3d8bbwe";
@@ -52,7 +52,7 @@ int main()
         FOREGROUND_RED |
         FOREGROUND_GREEN |
         FOREGROUND_INTENSITY);
-    std::cout << "Thoth Injector Build date (" << __DATE__ << " : " << __TIME__ << ")" << std::endl;
+    std::cout << "Osiris Injector Build date (" << __DATE__ << " : " << __TIME__ << ")" << std::endl;
     SetConsoleTextAttribute(hStdout,
         FOREGROUND_BLUE |
         FOREGROUND_GREEN |

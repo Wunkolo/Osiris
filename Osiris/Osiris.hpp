@@ -8,24 +8,24 @@
 #include <memory>
 #include <chrono>
 
-class ThothModule : public Console::Command
+class OsirisModule : public Console::Command
 {
 public:
     virtual void Tick(const std::chrono::high_resolution_clock::duration &DeltaTime) = 0;
-    virtual ~ThothModule() = default;
+    virtual ~OsirisModule() = default;
 private:
 };
 
-class Thoth : public Util::Singleton<Thoth>
+class Osiris : public Util::Singleton<Osiris>
 {
 public:
-    Thoth();
-    ~Thoth();
+    Osiris();
+    ~Osiris();
 
     void Tick(const std::chrono::high_resolution_clock::duration &DeltaTime);
 
     template<class T,
-        class = typename std::enable_if<std::is_base_of<ThothModule, T>::value>::type>
+        class = typename std::enable_if<std::is_base_of<OsirisModule, T>::value>::type>
         inline void PushModule(const std::string& Name)
     {
         std::shared_ptr<T> Module = std::make_shared<T>();
@@ -37,5 +37,5 @@ public:
     }
 
 private:
-    std::map<std::string, std::shared_ptr<ThothModule>> Commands;
+    std::map<std::string, std::shared_ptr<OsirisModule>> Commands;
 };

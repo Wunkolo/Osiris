@@ -1,6 +1,6 @@
-#include "ThothDebugger.hpp"
+#include "OsirisDebugger.hpp"
 
-ThothDebugger::ThothDebugger(const std::wstring &PackageID)
+OsirisDebugger::OsirisDebugger(const std::wstring &PackageID)
     :
     PackageID(PackageID)
 {
@@ -17,12 +17,12 @@ ThothDebugger::ThothDebugger(const std::wstring &PackageID)
     );
 }
 
-ThothDebugger::~ThothDebugger()
+OsirisDebugger::~OsirisDebugger()
 {
     DebugSettings.Release();
 }
 
-void ThothDebugger::EnableDebugging(std::wstring &Arguments)
+void OsirisDebugger::EnableDebugging(std::wstring &Arguments)
 {
     DebugSettings->EnableDebugging(
         PackageID.c_str(),
@@ -31,28 +31,28 @@ void ThothDebugger::EnableDebugging(std::wstring &Arguments)
     );
 }
 
-void ThothDebugger::DisableDebugging()
+void OsirisDebugger::DisableDebugging()
 {
     DebugSettings->DisableDebugging(
         PackageID.c_str()
     );
 }
 
-void ThothDebugger::Resume()
+void OsirisDebugger::Resume()
 {
     DebugSettings->Resume(
         PackageID.c_str()
     );
 }
 
-void ThothDebugger::Suspend()
+void OsirisDebugger::Suspend()
 {
     DebugSettings->Suspend(
         PackageID.c_str()
     );
 }
 
-PACKAGE_EXECUTION_STATE ThothDebugger::GetExecutionState()
+PACKAGE_EXECUTION_STATE OsirisDebugger::GetExecutionState()
 {
     PACKAGE_EXECUTION_STATE PackageState = PES_UNKNOWN;
 

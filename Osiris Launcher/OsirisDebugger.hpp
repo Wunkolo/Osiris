@@ -7,11 +7,11 @@
 
 // Class used to debug UWP Applications
 
-class ThothDebugger
+class OsirisDebugger
 {
 public:
-    ThothDebugger(const std::wstring &PackageID);
-    ~ThothDebugger();
+    OsirisDebugger(const std::wstring &PackageID);
+    ~OsirisDebugger();
 
     void EnableDebugging(std::wstring &Arguments);
     void DisableDebugging();

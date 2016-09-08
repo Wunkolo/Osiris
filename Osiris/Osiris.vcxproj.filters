@@ -24,13 +24,13 @@
     <ClCompile Include="Libraries\Utils\Checksum.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Thoth.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Libraries\Utils\Process.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Libraries\Utils\Thread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Osiris.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -56,9 +56,6 @@
     <ClInclude Include="Libraries\Utils\Utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Thoth.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Libraries\Utils\NonCopyable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -71,5 +68,11 @@
     <ClInclude Include="Libraries\Utils\Thread.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Osiris.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Osiris Launcher\Osiris Launcher.vcxproj" />
   </ItemGroup>
 </Project>

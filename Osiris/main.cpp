@@ -10,27 +10,27 @@
 
 #include <Console\Console.hpp>
 
-#include "Thoth.hpp"
+#include "Osiris.hpp"
 
 int32_t __stdcall StructuredExceptionPrinter(
     uint32_t ErrorCode,
     const EXCEPTION_POINTERS* const ExceptionInfo
 );
 
-uint32_t __stdcall ThothThread(void*)
+uint32_t __stdcall OsirisThread(void*)
 {
     __try
     {
         []()
         {
-            Console::AllocateConsole("Thoth");
+            Console::AllocateConsole("Osiris");
             std::chrono::high_resolution_clock::time_point PrevTime, CurTime;
             CurTime = std::chrono::high_resolution_clock::now();
             while( true )
             {
                 PrevTime = CurTime;
                 CurTime = std::chrono::high_resolution_clock::now();
-                Thoth::Instance()->Tick(
+                Osiris::Instance()->Tick(
                     (CurTime - PrevTime)
                 );
             }
@@ -50,14 +50,14 @@ int32_t __stdcall DllMain(HINSTANCE hDLL, uint32_t Reason, void *Reserved)
     {
         if( !DisableThreadLibraryCalls(hDLL) )
         {
-            MessageBox(nullptr, "Unable to disable thread library calls", "Thoth", MB_OK);
+            MessageBox(nullptr, "Unable to disable thread library calls", "Osiris", MB_OK);
             return false;
         }
 
         CreateThread(
             nullptr,
             0,
-            reinterpret_cast<unsigned long(__stdcall*)(void*)>(&ThothThread),
+            reinterpret_cast<unsigned long(__stdcall*)(void*)>(&OsirisThread),
             nullptr,
             0,
             nullptr);
