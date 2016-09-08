@@ -50,15 +50,14 @@ int main()
         nullptr
     );
 
+    DebugSettings->TerminateAllProcesses(PackageID);
+
     std::wcout << "Launching Halo 5: Forge...";
 
     LaunchAppUWP(ApplicationUserModelID, &ProcessID);
     std::wcout << "Launched" << std::endl;
 
     DebugSettings->Suspend(PackageID);
-    DebugSettings.Release();
-
-    CoUninitialize();
 
     void* hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleOutputCP(437);
@@ -108,6 +107,10 @@ int main()
         SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
         std::cout << "Failed" << std::endl;
     }
+
+    DebugSettings.Release();
+    CoUninitialize();
+
     system("pause");
     return 0;
 }
@@ -133,7 +136,7 @@ void SetAccessControl(std::wstring ExecutableName)
         nullptr,
         &SecurityDescriptor) == ERROR_SUCCESS )
     {
-        ConvertStringSidToSidA("S-1-15-2-1", &SecurityIdentifier);
+        ConvertStringSidToSidW(L"S-1-15-2-1", &SecurityIdentifier);
         if( SecurityIdentifier != nullptr )
         {
             ExplicitAccess.grfAccessPermissions = GENERIC_READ | GENERIC_EXECUTE;
@@ -190,7 +193,7 @@ uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath)
 
     SetAccessControl(DLLpath);
 
-    void* ProcLoadLibrary = reinterpret_cast<void*>(GetProcAddress(GetModuleHandle("kernel32.dll"), "LoadLibraryA"));
+    void* ProcLoadLibrary = reinterpret_cast<void*>(GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "LoadLibraryA"));
     if( !ProcLoadLibrary )
     {
         std::wcout << "Unable to find LoadLibraryA procedure" << std::endl;
