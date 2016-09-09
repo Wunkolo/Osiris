@@ -1,4 +1,9 @@
 #include "Log.hpp"
+#include <ctime>
+#include <iomanip>
+
+// _CRT_SECURE_NO_WARNINGS
+#pragma warning(disable:4996)
 
 namespace Util
 {
@@ -35,5 +40,16 @@ namespace Util
     std::shared_ptr<std::wofstream> Log::GetStream() const
     {
         return Stream;
+    }
+
+    std::shared_ptr<std::wofstream> Log::GetStreamTimeStamp()
+    {
+        time_t Time = std::time(nullptr);
+        tm LocalTime = *std::localtime(&Time);
+
+        (*Stream.get()) << std::put_time(
+            &LocalTime, L"[%F %T] : ");
+
+        return GetStream();
     }
 }

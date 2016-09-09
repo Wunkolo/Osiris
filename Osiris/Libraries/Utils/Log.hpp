@@ -4,7 +4,7 @@
 #include <fstream>
 #include <memory>
 
-#define LOG (*(Util::Log::Instance().get()->GetStream().get()))
+#define LOG (*(Util::Log::Instance().get()->GetStreamTimeStamp().get()))
 
 namespace Util
 {
@@ -17,6 +17,8 @@ namespace Util
         bool SetFile(const std::wstring &FileName);
 
         std::shared_ptr<std::wofstream> GetStream() const;
+
+        std::shared_ptr<std::wofstream> GetStreamTimeStamp();
 
     private:
         std::shared_ptr<std::wofstream> Stream;
