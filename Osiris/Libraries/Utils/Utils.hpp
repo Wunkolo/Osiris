@@ -7,6 +7,7 @@
 #include "Process.hpp"
 #include "Thread.hpp"
 #include "Pointer.hpp"
+#include "Hook.hpp"
 
 #include "Singleton.hpp"
 #include "NonCopyable.hpp"
