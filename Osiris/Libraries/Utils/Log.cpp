@@ -20,9 +20,7 @@ namespace Util
 
         NewStream = std::make_shared<std::wofstream>();
 
-        NewStream->open(
-            FileName,
-            std::wofstream::out | std::wofstream::app);
+        NewStream->open(FileName);
 
         if( NewStream->is_open() )
         {
