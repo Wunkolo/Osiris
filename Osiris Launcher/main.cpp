@@ -57,7 +57,7 @@ int main()
     LaunchAppUWP(ApplicationUserModelID, &ProcessID);
     std::wcout << "Launched" << std::endl;
 
-    DebugSettings->Suspend(PackageID);
+    //DebugSettings->Suspend(PackageID);
 
     void* hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleOutputCP(437);
