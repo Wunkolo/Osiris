@@ -27,31 +27,10 @@ Osiris::Osiris()
     LOG << "\t-Wunkolo (Wunkolo@gmail.com)\n";
     LOG << std::wstring(80, '-') << std::endl;
 
-    std::string Path;
-    Path.resize(MAX_PATH + 1, '\x0');
-
-    GetModuleFileNameA(nullptr, &Path[0], MAX_PATH);
-    LOG << "Process Module Path:\n\t" << Path.c_str() << std::endl;
     LOG << std::hex << std::uppercase << std::setfill(L'0');
     LOG << "Process Base: 0x" << Util::Process::Base() << std::endl;
     LOG << "Osiris Thread ID: 0x" << Util::Thread::GetCurrentThreadId() << std::endl;
     LOG << "Osiris Base: 0x" << Util::Process::GetModuleBase("Osiris.dll") << std::endl;
-
-    //Util::Process::IterateModules(
-    //    [](
-    //        const char* Name,
-    //        const char* Path,
-    //        Util::Pointer Base,
-    //        size_t Size
-    //        ) -> bool
-    //{
-    //    std::cout << Name << std::endl;
-    //    std::cout << Path << std::endl;
-    //    std::cout << std::setw(8) << Base << std::endl;
-    //    std::cout << Size << std::endl;
-    //    return true;
-    //}
-    //);
 
     // Push Commands
     //PushModule<Research>("research");
@@ -60,8 +39,6 @@ Osiris::Osiris()
 
 Osiris::~Osiris()
 {
-    LOG << "END SESSION" << std::endl;
-    LOG << std::wstring(80, '-') << std::endl;
 }
 
 void Osiris::Tick(const std::chrono::high_resolution_clock::duration &DeltaTime)
