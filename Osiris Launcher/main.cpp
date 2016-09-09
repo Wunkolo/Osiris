@@ -44,13 +44,13 @@ int main()
         CLSCTX_ALL
     );
 
+    DebugSettings->TerminateAllProcesses(PackageID);
+
     DebugSettings->EnableDebugging(
         PackageID,
         nullptr,
         nullptr
     );
-
-    DebugSettings->TerminateAllProcesses(PackageID);
 
     std::wcout << "Launching Halo 5: Forge...";
 
@@ -100,18 +100,18 @@ int main()
     {
         SetConsoleTextAttribute(hStdout, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
         std::cout << "Success!" << std::endl;
-        return 0;
     }
     else
     {
         SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
         std::cout << "Failed" << std::endl;
+        system("pause");
     }
 
-    DebugSettings.Release();
+    //DebugSettings->DisableDebugging(PackageID);
+    //DebugSettings.Release();
     CoUninitialize();
 
-    system("pause");
     return 0;
 }
 
@@ -179,6 +179,7 @@ void SetAccessControl(std::wstring ExecutableName)
 
 uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath)
 {
+    const size_t DLLPathSize = ((DLLpath.size() + 1) * sizeof(wchar_t));
     uint32_t Result = 0;
     if( !ProcessID )
     {
@@ -193,7 +194,12 @@ uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath)
 
     SetAccessControl(DLLpath);
 
-    void* ProcLoadLibrary = reinterpret_cast<void*>(GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "LoadLibraryA"));
+    void* ProcLoadLibrary = reinterpret_cast<void*>(
+        GetProcAddress(
+            GetModuleHandleW(L"kernel32.dll"),
+            "LoadLibraryW")
+        );
+
     if( !ProcLoadLibrary )
     {
         std::wcout << "Unable to find LoadLibraryA procedure" << std::endl;
@@ -211,18 +217,27 @@ uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath)
         std::wcout << "Unable to open process for writing" << std::endl;
         return false;
     }
-    void* Alloc = reinterpret_cast<void*>(VirtualAllocEx(
-        Process,
-        nullptr,
-        DLLpath.length() + 1,
-        MEM_RESERVE | MEM_COMMIT,
-        PAGE_READWRITE));
+    void* Alloc = reinterpret_cast<void*>(
+        VirtualAllocEx(
+            Process,
+            nullptr,
+            DLLPathSize,
+            MEM_RESERVE | MEM_COMMIT,
+            PAGE_READWRITE
+        )
+        );
+
     if( !Alloc )
     {
         std::wcout << "Unable to remotely allocate memory" << std::endl;
         return false;
     }
-    Result = WriteProcessMemory(Process, Alloc, DLLpath.c_str(), DLLpath.length() + 1, nullptr);
+    Result = WriteProcessMemory(
+        Process,
+        Alloc,
+        DLLpath.data(),
+        DLLPathSize,
+        nullptr);
 
     if( Result == 0 )
     {
