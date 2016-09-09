@@ -108,8 +108,8 @@ int main()
         system("pause");
     }
 
-    //DebugSettings->DisableDebugging(PackageID);
-    //DebugSettings.Release();
+    DebugSettings->DisableDebugging(PackageID);
+    DebugSettings.Release();
     CoUninitialize();
 
     return 0;
