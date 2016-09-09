@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <chrono>
 #include <Windows.h>
+#include <ShlObj.h>
 
 #include "Osiris.hpp"
 

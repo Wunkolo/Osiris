@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="Libraries\Console\Console.cpp" />
     <ClCompile Include="Libraries\Utils\Checksum.cpp" />
+    <ClCompile Include="Libraries\Utils\Log.cpp" />
     <ClCompile Include="Libraries\Utils\Process.cpp" />
     <ClCompile Include="Libraries\Utils\Thread.cpp" />
     <ClCompile Include="Osiris.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="Libraries\Console\Console.hpp" />
     <ClInclude Include="Libraries\Utils\BitField.hpp" />
     <ClInclude Include="Libraries\Utils\Checksum.hpp" />
+    <ClInclude Include="Libraries\Utils\Log.hpp" />
     <ClInclude Include="Libraries\Utils\Macros.hpp" />
     <ClInclude Include="Libraries\Utils\NonCopyable.hpp" />
     <ClInclude Include="Libraries\Utils\Pointer.hpp" />

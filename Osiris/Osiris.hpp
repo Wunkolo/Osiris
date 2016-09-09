@@ -1,14 +1,14 @@
 #pragma once
 
 #include <Utils/Singleton.hpp>
-#include "Console/Console.hpp"
 
 #include <string>
 #include <unordered_map>
 #include <memory>
 #include <chrono>
+#include <map>
 
-class OsirisModule : public Console::Command
+class OsirisModule
 {
 public:
     virtual void Tick(const std::chrono::high_resolution_clock::duration &DeltaTime) = 0;

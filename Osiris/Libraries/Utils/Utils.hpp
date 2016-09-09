@@ -12,3 +12,5 @@
 #include "NonCopyable.hpp"
 
 #include "BitField.hpp"
+
+#include "Log.hpp"

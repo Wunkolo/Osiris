@@ -2,6 +2,7 @@
 #include <iomanip>
 
 #include <Windows.h>
+#include <ShlObj.h>
 
 #include <conio.h> // _getch()
 
@@ -13,25 +14,28 @@
 
 Osiris::Osiris()
 {
-    //Console::SetTextColor(Console::Color::Info);
-    //std::cout << "Osiris" << "\xC4\xC4\xC4\xC2 ";
-    //std::cout << '[' << __DATE__ << " : " << __TIME__ << ']' << std::endl;
-    //Console::SetTextColor(Console::Color::Cyan | Console::Color::Bright);
-    //std::cout << "\t\xC0Wunkolo (Wunkolo@gmail.com)\n";
-    //Console::SetTextColor(Console::Color::Magenta | Console::Color::Bright);
-    //std::cout << std::string(Console::GetWidth() - 1, '\xC4') << std::endl;
-    //Console::SetTextColor(Console::Color::Info);
+    wchar_t Buffer[MAX_PATH] = { 0 };
+    SHGetSpecialFolderPathW(nullptr, Buffer, CSIDL_PROFILE, false);
 
-    //std::string Path;
-    //Path.resize(MAX_PATH + 1, '\x0');
+    std::wstring UserFolder(Buffer);
+    UserFolder += L"\\AppData\\Local\\Packages\\Microsoft.Halo5Forge_8wekyb3d8bbwe\\LocalState\\Log.txt";
 
-    //GetModuleFileNameA(nullptr, &Path[0], MAX_PATH);
-    //std::cout << "Process Module Path:\n\t" << Path.c_str() << std::endl;
-    //std::cout << std::hex << std::uppercase << std::setfill('0');
-    //std::cout << "Process Base: 0x" << Util::Process::Base() << std::endl;
-    //std::cout << "Osiris Thread ID: 0x" << GetCurrentThreadId() << std::endl;
-    //std::cout << "Osiris Thread ID: 0x" << Util::Thread::GetCurrentThreadId() << std::endl;
-    //std::cout << "Osiris Base: 0x" << Util::Process::GetModuleBase("Osiris.dll") << std::endl;
+    Util::Log::Instance()->SetFile(UserFolder);
+
+    LOG << "Osiris" << "---- ";
+    LOG << '[' << __DATE__ << " : " << __TIME__ << ']' << std::endl;
+    LOG << "\t-Wunkolo (Wunkolo@gmail.com)\n";
+    LOG << std::wstring(80, '-') << std::endl;
+
+    std::string Path;
+    Path.resize(MAX_PATH + 1, '\x0');
+
+    GetModuleFileNameA(nullptr, &Path[0], MAX_PATH);
+    LOG << "Process Module Path:\n\t" << Path.c_str() << std::endl;
+    LOG << std::hex << std::uppercase << std::setfill(L'0');
+    LOG << "Process Base: 0x" << Util::Process::Base() << std::endl;
+    LOG << "Osiris Thread ID: 0x" << Util::Thread::GetCurrentThreadId() << std::endl;
+    LOG << "Osiris Base: 0x" << Util::Process::GetModuleBase("Osiris.dll") << std::endl;
 
     //Util::Process::IterateModules(
     //    [](
@@ -56,15 +60,12 @@ Osiris::Osiris()
 
 Osiris::~Osiris()
 {
+    LOG << "END SESSION" << std::endl;
+    LOG << std::wstring(80, '-') << std::endl;
 }
 
 void Osiris::Tick(const std::chrono::high_resolution_clock::duration &DeltaTime)
 {
-    if( _kbhit() )
-    {
-        Console::Console::Instance()->HandleInput(_getch());
-        Console::Console::Instance()->PrintLine();
-    }
     for( std::pair<std::string, std::shared_ptr<OsirisModule>> Command : Commands )
     {
         if( Command.second )
