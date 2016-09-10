@@ -8,7 +8,7 @@
 
 #include "Osiris.hpp"
 
-//#include "Modules/OsirisModules.hpp"
+#include "Modules/OsirisModules.hpp"
 
 #include <Utils/Utils.hpp>
 

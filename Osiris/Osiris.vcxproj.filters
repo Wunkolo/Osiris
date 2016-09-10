@@ -83,6 +83,9 @@
     <ClInclude Include="Libraries\Utils\Hook.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Modules\OsirisModules.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Osiris Launcher\Osiris Launcher.vcxproj" />
