@@ -12,6 +12,8 @@
 
 #include <Utils/Utils.hpp>
 
+#include <Ausar\Ausar.hpp>
+
 Osiris::Osiris()
 {
     wchar_t Buffer[MAX_PATH] = { 0 };
@@ -31,6 +33,22 @@ Osiris::Osiris()
     LOG << "Process Base: 0x" << Util::Process::Base() << std::endl;
     LOG << "Osiris Thread ID: 0x" << Util::Thread::GetCurrentThreadId() << std::endl;
     LOG << "Osiris Base: 0x" << Util::Process::GetModuleBase("Osiris.dll") << std::endl;
+
+    const Ausar::ThreadTable *Table;
+
+    Table = Util::Process::GetModuleBase()(0x58CA4B0).Point<Ausar::ThreadTable>();
+
+    //for( size_t i = 0; i < 64; i++ )
+    //{
+    //    if( Table->Entries[i].Active == 0 )
+    //    {
+    //        continue;
+    //    }
+    //    LOG << "Thread Name: " << reinterpret_cast<const char*>(Table->Entries[i].ThreadName) << std::endl;
+    //    LOG << "Thread ID: " << Table->Entries[i].ThreadID << std::endl;
+    //}
+
+    LOG << "Main Thread ID: " << Table->GetThreadIDByName("MAIN") << std::endl;
 
     // Push Commands
     //PushModule<Research>("research");

@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Libraries\Ausar\Ausar.cpp" />
     <ClCompile Include="Libraries\Console\Console.cpp" />
     <ClCompile Include="Libraries\Utils\Checksum.cpp" />
     <ClCompile Include="Libraries\Utils\Hook.cpp" />
@@ -141,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Console\Console.hpp" />
+    <ClInclude Include="Libraries\Ausar\Ausar.hpp" />
     <ClInclude Include="Libraries\Console\Console.hpp" />
     <ClInclude Include="Libraries\Utils\BitField.hpp" />
     <ClInclude Include="Libraries\Utils\Checksum.hpp" />
