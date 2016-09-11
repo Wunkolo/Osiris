@@ -14,6 +14,12 @@
 
 #include <Ausar\Ausar.hpp>
 
+#include <winnt.h>
+#include <winternl.h>
+
+#include <vector>
+#include <iterator>
+
 Osiris::Osiris()
 {
     wchar_t Buffer[MAX_PATH] = { 0 };
@@ -29,8 +35,8 @@ Osiris::Osiris()
     LOG << "\t-Wunkolo (Wunkolo@gmail.com)\n";
     LOG << std::wstring(80, '-') << std::endl;
 
-    LOG << std::hex << std::uppercase << std::setfill(L'0');
-    LOG << "Process Base: 0x" << Util::Process::Base() << std::endl;
+    LOG << std::hex << std::uppercase << std::setfill(L'0')
+        << "Process Base: 0x" << Util::Process::Base() << std::endl;
     LOG << "Osiris Thread ID: 0x" << Util::Thread::GetCurrentThreadId() << std::endl;
     LOG << "Osiris Base: 0x" << Util::Process::GetModuleBase("Osiris.dll") << std::endl;
 
@@ -48,7 +54,90 @@ Osiris::Osiris()
     //    LOG << "Thread ID: " << Table->Entries[i].ThreadID << std::endl;
     //}
 
-    LOG << "Main Thread ID: " << Table->GetThreadIDByName("MAIN") << std::endl;
+    uint64_t ThreadID = Table->GetThreadIDByName("MAIN");
+
+    LOG << "Main Thread ID: " << ThreadID << std::endl;
+
+    typedef enum _THREADINFOCLASS {
+        ThreadBasicInformation = 0,
+    } THREADINFOCLASS;
+
+    typedef LONG KPRIORITY;
+
+    typedef struct _CLIENT_ID {
+        HANDLE UniqueProcess;
+        HANDLE UniqueThread;
+    } CLIENT_ID;
+    typedef CLIENT_ID *PCLIENT_ID;
+
+    typedef struct _THREAD_BASIC_INFORMATION
+    {
+        NTSTATUS                ExitStatus;
+        PVOID                   TebBaseAddress;
+        CLIENT_ID               ClientId;
+        KAFFINITY               AffinityMask;
+        KPRIORITY               Priority;
+        KPRIORITY               BasePriority;
+    } THREAD_BASIC_INFORMATION, *PTHREAD_BASIC_INFORMATION;
+
+    typedef NTSTATUS(WINAPI *InfoThreadProc)(HANDLE, LONG, PVOID, ULONG, PULONG);
+
+    HANDLE ThreadHandle = OpenThread(
+        THREAD_ALL_ACCESS,
+        false,
+        static_cast<DWORD>(ThreadID)
+    );
+
+    Util::Pointer TEB(nullptr);
+
+    InfoThreadProc NtQueryInformationThread = (InfoThreadProc)GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "NtQueryInformationThread");
+
+    THREAD_BASIC_INFORMATION ThreadInfo = { 0 };
+
+    NTSTATUS ntStatus = NtQueryInformationThread(
+        ThreadHandle,
+        ThreadBasicInformation,
+        &ThreadInfo,
+        sizeof(THREAD_BASIC_INFORMATION),
+        nullptr
+    );
+
+    LOG << ResumeThread(ThreadHandle) << std::endl;
+
+    CloseHandle(ThreadHandle);
+
+    TEB = Util::Pointer(ThreadInfo.TebBaseAddress)[0x58][0];
+
+    LOG << "Physics Constants: " << TEB[0x2D30] << std::endl;
+    LOG << "DOF Globals: " << TEB[0x49B0] << std::endl;
+    LOG << "DOF Data: " << TEB[0x1310] << std::endl;
+    LOG << "Director globals: " << TEB[0x198] << std::endl;
+    LOG << "Hue saturation control: " << TEB[0x2FF8] << std::endl;
+    LOG << "Game engine globals: " << TEB[0x13A8] << std::endl;
+    LOG << "Local Game engine globals: " << TEB[0x13B0] << std::endl;
+    LOG << "Game engine render globals: " << TEB[0x13B8] << std::endl;
+    LOG << "Game time globals: " << TEB[0x12A8] << std::endl;
+    LOG << "Composer globals: " << TEB[0x1C8] << std::endl;
+    LOG << "Fp weapons: " << TEB[0x1260] << std::endl;
+    LOG << "Player Focus: " << TEB[0x1320] << std::endl;
+    LOG << "Player Control Globals: " << TEB[0x1340] << std::endl;
+    LOG << "Player Control Globals Deter.: " << TEB[0x1348] << std::endl;
+    LOG << "Player Globals: " << TEB[0x1370] << std::endl;
+
+    LOG << "AI Globals: " << TEB[0x2E40] << std::endl;
+    LOG << "AI Player state Globals: " << TEB[0x2E18] << std::endl;
+
+    LOG << "Interaction ripples: " << TEB[0x4960] << std::endl;
+
+    LOG << "Rasterizer: " << TEB[0x49A0] << std::endl;
+    LOG << "Render game globals: " << TEB[0x49A8] << std::endl;
+    LOG << "fp orientations: " << TEB[0x4A10] << std::endl;
+
+    LOG << "Objects: " << TEB[0x4B18] << std::endl;
+    LOG << "Object name list: " << TEB[0x4B20] << std::endl;
+    LOG << "Object placement globals: " << TEB[0x4B58] << std::endl;
+    LOG << "Object globals: " << TEB[0x4C08] << std::endl;
+    LOG << "orientations: " << TEB[0x110] << std::endl;
 
     // Push Commands
     //PushModule<Research>("research");
