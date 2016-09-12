@@ -5,30 +5,6 @@
 
 #include <winnt.h>
 
-typedef enum _THREADINFOCLASS {
-    ThreadBasicInformation = 0,
-} THREADINFOCLASS;
-
-typedef LONG KPRIORITY;
-
-typedef struct _CLIENT_ID {
-    HANDLE UniqueProcess;
-    HANDLE UniqueThread;
-} CLIENT_ID;
-typedef CLIENT_ID *PCLIENT_ID;
-
-typedef struct _THREAD_BASIC_INFORMATION
-{
-    NTSTATUS                ExitStatus;
-    PVOID                   TebBaseAddress;
-    CLIENT_ID               ClientId;
-    KAFFINITY               AffinityMask;
-    KPRIORITY               Priority;
-    KPRIORITY               BasePriority;
-} THREAD_BASIC_INFORMATION, *PTHREAD_BASIC_INFORMATION;
-
-typedef NTSTATUS(WINAPI *InfoThreadProc)(HANDLE, LONG, PVOID, ULONG, PULONG);
-
 namespace Util
 {
     namespace Thread
@@ -63,22 +39,44 @@ namespace Util
                 return false;
             }
 
-            InfoThreadProc NtQueryInformationThread = (InfoThreadProc)GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "NtQueryInformationThread");
+            typedef NTSTATUS(WINAPI *InfoThreadProc)(HANDLE, LONG, PVOID, ULONG, PULONG);
+
+            InfoThreadProc NtQueryInformationThread =
+                reinterpret_cast<InfoThreadProc>(
+                    GetProcAddress(
+                        GetModuleHandleA("ntdll.dll"),
+                        "NtQueryInformationThread"
+                    )
+                    );
 
             if( NtQueryInformationThread == nullptr )
             {
                 return false;
             }
 
-            THREAD_BASIC_INFORMATION ThreadInfo = { 0 };
+            struct THREAD_BASIC_INFORMATION
+            {
+                NTSTATUS ExitStatus;
+                PVOID TebBaseAddress;
+                struct CLIENT_ID
+                {
+                    HANDLE UniqueProcess;
+                    HANDLE UniqueThread;
+                } ClientId;
+                KAFFINITY AffinityMask;
+                LONG Priority;
+                LONG BasePriority;
+            } ThreadInfo = { 0 };
 
             NTSTATUS ntStatus = NtQueryInformationThread(
                 ThreadHandle,
-                ThreadBasicInformation,
+                0,
                 &ThreadInfo,
                 sizeof(THREAD_BASIC_INFORMATION),
                 nullptr
             );
+
+            CloseHandle(ThreadHandle);
 
             if( ntStatus != 0 )
             {
