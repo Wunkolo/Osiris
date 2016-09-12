@@ -7,7 +7,11 @@ namespace Util
     class Pointer
     {
     public:
-        Pointer() = delete;
+        Pointer()
+            :
+            Address(0)
+        {
+        };
 
         Pointer(void* Pointer)
             :
