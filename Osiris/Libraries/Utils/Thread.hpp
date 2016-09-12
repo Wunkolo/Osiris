@@ -11,7 +11,7 @@ namespace Util
     {
         uintmax_t GetCurrentThreadId();
 
-        Pointer GetThreadLocalStorage(size_t Index);
+        bool GetThreadLocalStorage(uint32_t ThreadID, Pointer &TLSArray);
 
         // Return false to stop iteration
         typedef bool(*ThreadCallback)(

@@ -3,6 +3,33 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 
+#include <winnt.h>
+#include <winternl.h>
+
+typedef enum _THREADINFOCLASS {
+    ThreadBasicInformation = 0,
+} THREADINFOCLASS;
+
+typedef LONG KPRIORITY;
+
+typedef struct _CLIENT_ID {
+    HANDLE UniqueProcess;
+    HANDLE UniqueThread;
+} CLIENT_ID;
+typedef CLIENT_ID *PCLIENT_ID;
+
+typedef struct _THREAD_BASIC_INFORMATION
+{
+    NTSTATUS                ExitStatus;
+    PVOID                   TebBaseAddress;
+    CLIENT_ID               ClientId;
+    KAFFINITY               AffinityMask;
+    KPRIORITY               Priority;
+    KPRIORITY               BasePriority;
+} THREAD_BASIC_INFORMATION, *PTHREAD_BASIC_INFORMATION;
+
+typedef NTSTATUS(WINAPI *InfoThreadProc)(HANDLE, LONG, PVOID, ULONG, PULONG);
+
 namespace Util
 {
     namespace Thread
@@ -24,18 +51,44 @@ namespace Util
 #endif
         }
 
-        Pointer GetThreadLocalStorage(size_t Index)
+        bool GetThreadLocalStorage(uint32_t ThreadID, Pointer &TLS)
         {
-            //#ifdef _WIN64
-            //            return Pointer(
-            //                __readgsqword(0x1480 + static_cast<uint32_t>(Index) * 8)
-            //            );
-            //#else
-            //            return Pointer(
-            //                __readfsdword(0x18)
-            //            )(0xE10 + static_cast<uint32_t>(Index) * 4).Read<uintptr_t>();
-            //#endif
-            return TlsGetValue(static_cast<uint32_t>(Index));
+            HANDLE ThreadHandle = OpenThread(
+                THREAD_ALL_ACCESS,
+                false,
+                static_cast<DWORD>(ThreadID)
+            );
+
+            if( ThreadHandle == nullptr )
+            {
+                return false;
+            }
+
+            InfoThreadProc NtQueryInformationThread = (InfoThreadProc)GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "NtQueryInformationThread");
+
+            if( NtQueryInformationThread == nullptr )
+            {
+                return false;
+            }
+
+            THREAD_BASIC_INFORMATION ThreadInfo = { 0 };
+
+            NTSTATUS ntStatus = NtQueryInformationThread(
+                ThreadHandle,
+                ThreadBasicInformation,
+                &ThreadInfo,
+                sizeof(THREAD_BASIC_INFORMATION),
+                nullptr
+            );
+
+            if( ntStatus != 0 )
+            {
+                return false;
+            }
+
+            TLS = Pointer(ThreadInfo.TebBaseAddress)[0x58][0];
+
+            return true;
         }
 
         void IterateThreads(ThreadCallback ThreadProc, uint32_t ProcessID)
