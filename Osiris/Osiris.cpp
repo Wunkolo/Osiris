@@ -111,7 +111,7 @@ Osiris::Osiris()
     LOG << "Physics Constants: " << Tls[0x2D30] << std::endl;
     LOG << "userGraphicsScalingOptions: " << Tls[0x3050] << std::endl;
 
-    LOG << "random math: " << Tls[0x2C38] << std::endl;
+    LOG << "random math: " << Tls[0x2C28] << std::endl;
     LOG << "incident globals: " << Tls[0x2C38] << std::endl;
 
     LOG << "DOF Globals: " << Tls[0x49B0] << std::endl;
