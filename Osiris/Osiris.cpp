@@ -88,7 +88,7 @@ Osiris::Osiris()
         static_cast<DWORD>(ThreadID)
     );
 
-    Util::Pointer TEB(nullptr);
+    Util::Pointer Tls(nullptr);
 
     InfoThreadProc NtQueryInformationThread = (InfoThreadProc)GetProcAddress(GetModuleHandleW(L"ntdll.dll"), "NtQueryInformationThread");
 
@@ -106,38 +106,47 @@ Osiris::Osiris()
 
     CloseHandle(ThreadHandle);
 
-    TEB = Util::Pointer(ThreadInfo.TebBaseAddress)[0x58][0];
+    Tls = Util::Pointer(ThreadInfo.TebBaseAddress)[0x58][0];
 
-    LOG << "Physics Constants: " << TEB[0x2D30] << std::endl;
-    LOG << "DOF Globals: " << TEB[0x49B0] << std::endl;
-    LOG << "DOF Data: " << TEB[0x1310] << std::endl;
-    LOG << "Director globals: " << TEB[0x198] << std::endl;
-    LOG << "Hue saturation control: " << TEB[0x2FF8] << std::endl;
-    LOG << "Game engine globals: " << TEB[0x13A8] << std::endl;
-    LOG << "Local Game engine globals: " << TEB[0x13B0] << std::endl;
-    LOG << "Game engine render globals: " << TEB[0x13B8] << std::endl;
-    LOG << "Game time globals: " << TEB[0x12A8] << std::endl;
-    LOG << "Composer globals: " << TEB[0x1C8] << std::endl;
-    LOG << "Fp weapons: " << TEB[0x1260] << std::endl;
-    LOG << "Player Focus: " << TEB[0x1320] << std::endl;
-    LOG << "Player Control Globals: " << TEB[0x1340] << std::endl;
-    LOG << "Player Control Globals Deter.: " << TEB[0x1348] << std::endl;
-    LOG << "Player Globals: " << TEB[0x1370] << std::endl;
+    LOG << "Physics Constants: " << Tls[0x2D30] << std::endl;
+    LOG << "userGraphicsScalingOptions: " << Tls[0x3050] << std::endl;
 
-    LOG << "AI Globals: " << TEB[0x2E40] << std::endl;
-    LOG << "AI Player state Globals: " << TEB[0x2E18] << std::endl;
+    LOG << "random math: " << Tls[0x2C38] << std::endl;
+    LOG << "incident globals: " << Tls[0x2C38] << std::endl;
 
-    LOG << "Interaction ripples: " << TEB[0x4960] << std::endl;
+    LOG << "DOF Globals: " << Tls[0x49B0] << std::endl;
+    LOG << "DOF Data: " << Tls[0x1310] << std::endl;
+    LOG << "Director globals: " << Tls[0x198] << std::endl;
+    LOG << "Hue saturation control: " << Tls[0x2FF8] << std::endl;
+    LOG << "Game engine globals: " << Tls[0x13A8] << std::endl;
+    LOG << "Local Game engine globals: " << Tls[0x13B0] << std::endl;
+    LOG << "Game engine render globals: " << Tls[0x13B8] << std::endl;
+    LOG << "Game time globals: " << Tls[0x12A8] << std::endl;
+    LOG << "Composer globals: " << Tls[0x1C8] << std::endl;
+    LOG << "Fp weapons: " << Tls[0x1260] << std::endl;
 
-    LOG << "Rasterizer: " << TEB[0x49A0] << std::endl;
-    LOG << "Render game globals: " << TEB[0x49A8] << std::endl;
-    LOG << "fp orientations: " << TEB[0x4A10] << std::endl;
+    LOG << "Player Focus: " << Tls[0x1320] << std::endl;
+    LOG << "Player Control Globals: " << Tls[0x1340] << std::endl;
+    LOG << "Player Control Globals Deter.: " << Tls[0x1348] << std::endl;
+    LOG << "Player Globals: " << Tls[0x1370] << std::endl;
+    LOG << "Player Mapping Globals: " << Tls[0x1350] << std::endl;
 
-    LOG << "Objects: " << TEB[0x4B18] << std::endl;
-    LOG << "Object name list: " << TEB[0x4B20] << std::endl;
-    LOG << "Object placement globals: " << TEB[0x4B58] << std::endl;
-    LOG << "Object globals: " << TEB[0x4C08] << std::endl;
-    LOG << "orientations: " << TEB[0x110] << std::endl;
+    LOG << "AI Globals: " << Tls[0x2E40] << std::endl;
+    LOG << "AI Player state Globals: " << Tls[0x2E18] << std::endl;
+
+    LOG << "Interaction ripples: " << Tls[0x4960] << std::endl;
+
+    LOG << "Rasterizer: " << Tls[0x49A0] << std::endl;
+    LOG << "Render game globals: " << Tls[0x49A8] << std::endl;
+    LOG << "Render texture globals: " << Tls[0x3058] << std::endl;
+    LOG << "atmosphere override settings: " << Tls[0x4998] << std::endl;
+    LOG << "fp orientations: " << Tls[0x4A10] << std::endl;
+
+    LOG << "Objects: " << Tls[0x4B18] << std::endl;
+    LOG << "Object name list: " << Tls[0x4B20] << std::endl;
+    LOG << "Object placement globals: " << Tls[0x4B58] << std::endl;
+    LOG << "Object globals: " << Tls[0x4C08] << std::endl;
+    LOG << "orientations: " << Tls[0x110] << std::endl;
 
     // Push Commands
     //PushModule<Research>("research");
