@@ -202,22 +202,20 @@ uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath)
 
     if( !ProcLoadLibrary )
     {
-        std::wcout << "Unable to find LoadLibraryA procedure" << std::endl;
+        std::wcout << "Unable to find LoadLibraryW procedure" << std::endl;
         return false;
     }
 
     void* Process = OpenProcess(
-        PROCESS_VM_OPERATION | PROCESS_VM_WRITE |
-        PROCESS_CREATE_THREAD | PROCESS_QUERY_INFORMATION |
-        PROCESS_VM_READ,
+        PROCESS_ALL_ACCESS,
         false,
         ProcessID);
-    if( !Process )
+    if( Process == nullptr )
     {
         std::wcout << "Unable to open process for writing" << std::endl;
         return false;
     }
-    void* Alloc = reinterpret_cast<void*>(
+    void* VirtualAlloc = reinterpret_cast<void*>(
         VirtualAllocEx(
             Process,
             nullptr,
@@ -227,21 +225,34 @@ uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath)
         )
         );
 
-    if( !Alloc )
+    if( VirtualAlloc == nullptr )
     {
         std::wcout << "Unable to remotely allocate memory" << std::endl;
+        CloseHandle(Process);
         return false;
     }
+
+    size_t BytesWritten = 0;
     Result = WriteProcessMemory(
         Process,
-        Alloc,
+        VirtualAlloc,
         DLLpath.data(),
         DLLPathSize,
-        nullptr);
+        &BytesWritten
+    );
 
     if( Result == 0 )
     {
         std::wcout << "Unable to write process memory" << std::endl;
+        CloseHandle(Process);
+        return false;
+    }
+
+    if( BytesWritten != DLLPathSize )
+    {
+        std::wcout << "Failed to write remote DLL path name" << std::endl;
+        CloseHandle(Process);
+        return false;
     }
 
     void* RemoteThread =
@@ -249,24 +260,26 @@ uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath)
             Process,
             nullptr,
             0,
-            (LPTHREAD_START_ROUTINE)ProcLoadLibrary,
-            Alloc,
+            reinterpret_cast<LPTHREAD_START_ROUTINE>(ProcLoadLibrary),
+            VirtualAlloc,
             0,
             0);
 
     // Wait for remote thread to finish
     if( RemoteThread )
     {
-        WaitForSingleObject(RemoteThread, 10000);
+        // Explicitly wait for LoadLibraryW to complete before releasing memory
+        // avoids causing a remote memory leak
+        WaitForSingleObject(RemoteThread, INFINITE);
+        CloseHandle(RemoteThread);
     }
     else
     {
         // Failed to create thread
-        std::cout << "Unable to create remote thread" << std::endl;
-        return 0;
+        std::wcout << "Unable to create remote thread" << std::endl;
     }
 
-    VirtualFreeEx(Process, Alloc, 0, MEM_RELEASE);
+    VirtualFreeEx(Process, VirtualAlloc, 0, MEM_RELEASE);
     CloseHandle(Process);
     return Result;
 }
