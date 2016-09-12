@@ -4,7 +4,6 @@
 #include <TlHelp32.h>
 
 #include <winnt.h>
-#include <winternl.h>
 
 typedef enum _THREADINFOCLASS {
     ThreadBasicInformation = 0,
