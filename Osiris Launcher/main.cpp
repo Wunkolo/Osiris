@@ -117,14 +117,14 @@ int main()
 
 void SetAccessControl(std::wstring ExecutableName)
 {
-    PSECURITY_DESCRIPTOR SecurityDescriptor = nullptr;
-    EXPLICIT_ACCESS ExplicitAccess = { 0 };
+    PSECURITY_DESCRIPTOR *SecurityDescriptor = nullptr;
+    EXPLICIT_ACCESSW ExplicitAccess = { 0 };
 
-    PACL AccessControlCurrent = nullptr;
-    PACL AccessControlNew = nullptr;
+    ACL *AccessControlCurrent = nullptr;
+    ACL *AccessControlNew = nullptr;
 
     SECURITY_INFORMATION SecurityInfo = DACL_SECURITY_INFORMATION;
-    PSID SecurityIdentifier;
+    PSID SecurityIdentifier = nullptr;
 
     if( GetNamedSecurityInfoW(
         ExecutableName.c_str(),
@@ -134,7 +134,7 @@ void SetAccessControl(std::wstring ExecutableName)
         nullptr,
         &AccessControlCurrent,
         nullptr,
-        &SecurityDescriptor) == ERROR_SUCCESS )
+        SecurityDescriptor) == ERROR_SUCCESS )
     {
         ConvertStringSidToSidW(L"S-1-15-2-1", &SecurityIdentifier);
         if( SecurityIdentifier != nullptr )
@@ -144,9 +144,9 @@ void SetAccessControl(std::wstring ExecutableName)
             ExplicitAccess.grfInheritance = SUB_CONTAINERS_AND_OBJECTS_INHERIT;
             ExplicitAccess.Trustee.TrusteeForm = TRUSTEE_IS_SID;
             ExplicitAccess.Trustee.TrusteeType = TRUSTEE_IS_WELL_KNOWN_GROUP;
-            ExplicitAccess.Trustee.ptstrName = reinterpret_cast<char*>(SecurityIdentifier);
+            ExplicitAccess.Trustee.ptstrName = reinterpret_cast<wchar_t*>(SecurityIdentifier);
 
-            if( SetEntriesInAclA(
+            if( SetEntriesInAclW(
                 1,
                 &ExplicitAccess,
                 AccessControlCurrent,
