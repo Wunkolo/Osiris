@@ -29,7 +29,7 @@ Osiris::Osiris()
 
     LOG << "Osiris" << "---- ";
     LOG << '[' << __DATE__ << " : " << __TIME__ << ']' << std::endl;
-    LOG << "\t-Wunkolo (Wunkolo@gmail.com)\n";
+    LOG << "\t-https://github.com/Wunkolo/Osiris\n";
     LOG << std::wstring(80, '-') << std::endl;
 
     LOG << std::hex << std::uppercase << std::setfill(L'0')

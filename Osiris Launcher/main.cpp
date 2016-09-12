@@ -78,7 +78,7 @@ int main()
         FOREGROUND_BLUE |
         FOREGROUND_GREEN |
         FOREGROUND_INTENSITY);
-    std::wcout << "\t-Wunkolo (Wunkolo@gmail.com)\n";
+    std::wcout << "\t-https://github.com/Wunkolo/Osiris\n";
     SetConsoleTextAttribute(hStdout,
         FOREGROUND_RED |
         FOREGROUND_BLUE);
