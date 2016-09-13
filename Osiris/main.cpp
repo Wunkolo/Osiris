@@ -29,7 +29,6 @@ int32_t __stdcall DllMain(HINSTANCE hDLL, uint32_t Reason, void *Reserved)
     {
         if( !DisableThreadLibraryCalls(hDLL) )
         {
-            MessageBox(nullptr, "Unable to disable thread library calls", "Osiris", MB_OK);
             return false;
         }
 
