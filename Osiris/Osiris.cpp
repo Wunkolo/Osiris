@@ -84,6 +84,8 @@ Osiris::Osiris()
         LOG << "Player Globals: " << Tls[0x1370] << std::endl;
         LOG << "Player Mapping Globals: " << Tls[0x1350] << std::endl;
 
+        LOG << "Player Data: " << Tls[0x1368] << std::endl;
+
         LOG << "AI Globals: " << Tls[0x2E40] << std::endl;
         LOG << "AI Player state Globals: " << Tls[0x2E18] << std::endl;
 
