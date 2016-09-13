@@ -26,8 +26,13 @@ namespace Util
 #endif
         }
 
-        bool GetThreadLocalStorage(uint32_t ThreadID, Pointer &TLS)
+        bool GetThreadLocalStorage(uint32_t ThreadID, size_t TlsSlot, Pointer &TLS)
         {
+            if( TlsSlot > 1088 ) // Max TLS slots
+            {
+                return false;
+            }
+
             HANDLE ThreadHandle = OpenThread(
                 THREAD_ALL_ACCESS,
                 false,

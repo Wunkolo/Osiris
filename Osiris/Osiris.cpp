@@ -57,8 +57,10 @@ Osiris::Osiris()
 
     Util::Pointer Tls;
 
-    if( Util::Thread::GetThreadLocalStorage(ThreadID, Tls) )
+    if( Util::Thread::GetThreadLocalStorage(ThreadID, 0, Tls) )
     {
+        LOG << "Tls Globals: " << Tls << std::endl;
+
         LOG << "Physics Constants: " << Tls[0x2D30] << std::endl;
         LOG << "userGraphicsScalingOptions: " << Tls[0x3050] << std::endl;
 
