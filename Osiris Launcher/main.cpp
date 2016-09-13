@@ -32,33 +32,6 @@ bool LaunchAppUWP(const std::wstring &PackageName, uint32_t *ProcessID);
 
 int main()
 {
-    uint32_t ProcessID = 0;
-
-    CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-
-    CComQIPtr<IPackageDebugSettings> DebugSettings;
-
-    DebugSettings.CoCreateInstance(
-        CLSID_PackageDebugSettings,
-        nullptr,
-        CLSCTX_ALL
-    );
-
-    DebugSettings->TerminateAllProcesses(PackageID);
-
-    DebugSettings->EnableDebugging(
-        PackageID,
-        nullptr,
-        nullptr
-    );
-
-    std::wcout << "Launching Halo 5: Forge...";
-
-    LaunchAppUWP(ApplicationUserModelID, &ProcessID);
-    std::wcout << "Launched" << std::endl;
-
-    //DebugSettings->Suspend(PackageID);
-
     void* hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleOutputCP(437);
 
@@ -87,6 +60,33 @@ int main()
         FOREGROUND_RED |
         FOREGROUND_GREEN |
         FOREGROUND_INTENSITY);
+
+    uint32_t ProcessID = 0;
+
+    CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+
+    CComQIPtr<IPackageDebugSettings> DebugSettings;
+
+    DebugSettings.CoCreateInstance(
+        CLSID_PackageDebugSettings,
+        nullptr,
+        CLSCTX_ALL
+    );
+
+    DebugSettings->TerminateAllProcesses(PackageID);
+
+    DebugSettings->EnableDebugging(
+        PackageID,
+        nullptr,
+        nullptr
+    );
+
+    std::wcout << "Launching Halo 5: Forge...";
+
+    LaunchAppUWP(ApplicationUserModelID, &ProcessID);
+    std::wcout << "Launched" << std::endl;
+
+    //DebugSettings->Suspend(PackageID);
 
     std::wstring CurrentDirectory(MAX_PATH, 0);
     CurrentDirectory.resize(GetCurrentDirectoryW(MAX_PATH, &CurrentDirectory[0]));
