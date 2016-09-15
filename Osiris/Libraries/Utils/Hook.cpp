@@ -19,7 +19,7 @@ namespace Util
 
             uint32_t MemoryAccess, Temp;
 
-            if( !VirtualProtect(
+            if( !VirtualProtectFromApp(
                 Address.Point<void>(),
                 5,
                 PAGE_READWRITE,
@@ -40,7 +40,7 @@ namespace Util
             // Write Opcode
             Address.Write(Opcode);
 
-            VirtualProtect(
+            VirtualProtectFromApp(
                 Address.Point<void>(),
                 5,
                 MemoryAccess,
@@ -58,7 +58,7 @@ namespace Util
 
             uint32_t MemoryAccess, Temp;
 
-            if( !VirtualProtect(
+            if( !VirtualProtectFromApp(
                 Address.Point<void>(),
                 5,
                 PAGE_READWRITE,
@@ -79,7 +79,7 @@ namespace Util
             // Write Opcode
             Address.Write(Opcode);
 
-            VirtualProtect(
+            VirtualProtectFromApp(
                 Address.Point<void>(),
                 5,
                 MemoryAccess,
