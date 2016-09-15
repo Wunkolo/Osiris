@@ -4,6 +4,8 @@
 
 Osiris is a research framework intended to interface with Microsoft's [Halo 5: Forge](https://www.microsoft.com/en-us/store/p/halo-5-forge/9nblggh51mwp).
 
+Osiris requires the [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk) to be compiled.
+
 Check out [AusarDocs](https://github.com/AnvilOnline/AusarDocs) for an in-depth analyzation of the Halo 5: Forge `Ausar` engine.
 
 Check out the [Osiris Wiki](https://github.com/Wunkolo/Osiris/wiki) for other helpful tips and info.
