@@ -4,15 +4,13 @@
 #include <Windows.h>
 #include <ShlObj.h>
 
-#include <conio.h> // _getch()
-
 #include "Osiris.hpp"
 
 #include "Modules/OsirisModules.hpp"
 
 #include <Utils/Utils.hpp>
 
-#include <Ausar\Ausar.hpp>
+#include <Ausar/Ausar.hpp>
 
 #include <vector>
 #include <iterator>
