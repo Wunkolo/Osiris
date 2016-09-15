@@ -6,12 +6,12 @@ namespace Util
 {
     namespace Hook
     {
-        void WriteCall(
+        bool WriteCall(
             Pointer Address,
             Pointer Destination
         );
 
-        void WriteJump(
+        bool WriteJump(
             Pointer Address,
             Pointer Destination
         );

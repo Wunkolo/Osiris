@@ -8,7 +8,7 @@ namespace Util
 {
     namespace Hook
     {
-        void WriteCall(Pointer Address, Pointer Destination)
+        bool WriteCall(Pointer Address, Pointer Destination)
         {
             std::array<uint8_t, 5> Opcode = { 0xE8 ,0 ,0 ,0 ,0 };
             uint32_t Distance = static_cast<uint32_t>(
@@ -25,6 +25,7 @@ namespace Util
             ) )
             {
                 // Error unprotecting memory
+                return false;
             }
 
             // Write Offset to opcode
@@ -43,9 +44,10 @@ namespace Util
                 MemoryAccess,
                 reinterpret_cast<DWORD*>(&Temp)
             );
+            return true;
         }
 
-        void WriteJump(Pointer Address, Pointer Destination)
+        bool WriteJump(Pointer Address, Pointer Destination)
         {
             std::array<uint8_t, 5> Opcode = { 0xE9 ,0 ,0 ,0 ,0 };
             uint32_t Distance = static_cast<uint32_t>(
@@ -62,6 +64,7 @@ namespace Util
             ) )
             {
                 // Error unprotecting memory
+                return false;
             }
 
             // Write Offset to opcode
@@ -80,6 +83,7 @@ namespace Util
                 MemoryAccess,
                 reinterpret_cast<DWORD*>(&Temp)
             );
+            return true;
         }
     }
 }
