@@ -307,8 +307,8 @@ bool LaunchAppUWP(const std::wstring &PackageID, uint32_t *ProcessID)
 
 std::wstring GetRunningDirectory()
 {
-    wchar_t exePath[MAX_PATH];
-    GetModuleFileNameW(GetModuleHandle(NULL), exePath, (sizeof(exePath)));
-    PathRemoveFileSpecW(exePath);
-    return std::wstring(exePath);
+    wchar_t RunPath[MAX_PATH];
+    GetModuleFileNameW(GetModuleHandleW(nullptr), RunPath, MAX_PATH);
+    PathRemoveFileSpecW(RunPath);
+    return std::wstring(RunPath);
 }
