@@ -24,9 +24,9 @@ void GlobalInfo::Tick(const std::chrono::high_resolution_clock::duration & Delta
     // 3 seconds seems to be fast enough
     if( !Dumped && std::chrono::duration_cast<std::chrono::seconds>(Timer).count() > 3 )
     {
-        const Ausar::ThreadTable *Table;
+        const Ausar::Threading::ThreadTable *Table;
 
-        Table = Util::Process::GetModuleBase()(0x58CA4B0).Point<Ausar::ThreadTable>();
+        Table = Util::Process::GetModuleBase()(0x58CA4B0).Point<Ausar::Threading::ThreadTable>();
 
         uint64_t ThreadID = Table->GetThreadIDByName("MAIN");
 

@@ -138,7 +138,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Libraries\Ausar\AI\AI.cpp" />
     <ClCompile Include="Libraries\Ausar\Ausar.cpp" />
+    <ClCompile Include="Libraries\Ausar\Game\Game.cpp" />
+    <ClCompile Include="Libraries\Ausar\Graphics\Graphics.cpp" />
+    <ClCompile Include="Libraries\Ausar\Input\Input.cpp" />
+    <ClCompile Include="Libraries\Ausar\Logging\Logging.cpp" />
+    <ClCompile Include="Libraries\Ausar\Memory\Memory.cpp" />
+    <ClCompile Include="Libraries\Ausar\Networking\Networking.cpp" />
+    <ClCompile Include="Libraries\Ausar\Physics\Physics.cpp" />
+    <ClCompile Include="Libraries\Ausar\Scripting\Scripting.cpp" />
+    <ClCompile Include="Libraries\Ausar\Sound\Sound.cpp" />
+    <ClCompile Include="Libraries\Ausar\Tag\Tag.cpp" />
+    <ClCompile Include="Libraries\Ausar\Threading\Threading.cpp" />
+    <ClCompile Include="Libraries\Ausar\UI\UI.cpp" />
     <ClCompile Include="Libraries\Console\Console.cpp" />
     <ClCompile Include="Libraries\Utils\Checksum.cpp" />
     <ClCompile Include="Libraries\Utils\Hook.cpp" />
@@ -151,7 +164,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Console\Console.hpp" />
+    <ClInclude Include="Libraries\Ausar\AI\AI.hpp" />
     <ClInclude Include="Libraries\Ausar\Ausar.hpp" />
+    <ClInclude Include="Libraries\Ausar\Game\Game.hpp" />
+    <ClInclude Include="Libraries\Ausar\Graphics\Graphics.hpp" />
+    <ClInclude Include="Libraries\Ausar\Input\Input.hpp" />
+    <ClInclude Include="Libraries\Ausar\Logging\Logging.hpp" />
+    <ClInclude Include="Libraries\Ausar\Memory\Memory.hpp" />
+    <ClInclude Include="Libraries\Ausar\Networking\Networking.hpp" />
+    <ClInclude Include="Libraries\Ausar\Physics\Physics.hpp" />
+    <ClInclude Include="Libraries\Ausar\Scripting\Scripting.hpp" />
+    <ClInclude Include="Libraries\Ausar\Sound\Sound.hpp" />
+    <ClInclude Include="Libraries\Ausar\Tag\Tag.hpp" />
+    <ClInclude Include="Libraries\Ausar\Threading\Threading.hpp" />
+    <ClInclude Include="Libraries\Ausar\UI\UI.hpp" />
     <ClInclude Include="Libraries\Console\Console.hpp" />
     <ClInclude Include="Libraries\Utils\BitField.hpp" />
     <ClInclude Include="Libraries\Utils\Checksum.hpp" />
