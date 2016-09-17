@@ -84,6 +84,9 @@
     <ClCompile Include="Libraries\Ausar\Threading\Threading.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Libraries\Utils\Debug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Console\Console.hpp">
@@ -177,6 +180,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\Ausar\Threading\Threading.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Libraries\Utils\Debug.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

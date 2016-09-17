@@ -93,6 +93,7 @@
     <ClCompile Include="Libraries\Ausar\UI\UI.cpp" />
     <ClCompile Include="Libraries\Console\Console.cpp" />
     <ClCompile Include="Libraries\Utils\Checksum.cpp" />
+    <ClCompile Include="Libraries\Utils\Debug.cpp" />
     <ClCompile Include="Libraries\Utils\Hook.cpp" />
     <ClCompile Include="Libraries\Utils\Log.cpp" />
     <ClCompile Include="Libraries\Utils\Process.cpp" />
@@ -120,6 +121,7 @@
     <ClInclude Include="Libraries\Console\Console.hpp" />
     <ClInclude Include="Libraries\Utils\BitField.hpp" />
     <ClInclude Include="Libraries\Utils\Checksum.hpp" />
+    <ClInclude Include="Libraries\Utils\Debug.hpp" />
     <ClInclude Include="Libraries\Utils\Hook.hpp" />
     <ClInclude Include="Libraries\Utils\Log.hpp" />
     <ClInclude Include="Libraries\Utils\Macros.hpp" />
