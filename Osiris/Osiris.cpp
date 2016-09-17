@@ -23,7 +23,7 @@ Osiris::Osiris()
     SHGetSpecialFolderPathW(nullptr, UserPath, CSIDL_PROFILE, false);
 
     std::wstring LogPath(UserPath);
-    LogPath += L"\\AppData\\Local\\Packages\\Microsoft.Halo5Forge_8wekyb3d8bbwe\\LocalState\\Log.txt";
+    LogPath += L"\\AppData\\Local\\Packages\\Microsoft.Halo5Forge_8wekyb3d8bbwe\\TempState\\Log.txt";
 
     Util::Log::Instance()->SetFile(LogPath);
 
