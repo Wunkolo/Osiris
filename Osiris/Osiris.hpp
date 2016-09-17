@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Utils/Singleton.hpp>
-
+#include <Utils/Pointer.hpp>
 #include <string>
 #include <unordered_map>
 #include <memory>
@@ -32,4 +32,5 @@ public:
 
 private:
     std::map<std::string, std::shared_ptr<OsirisModule>> Commands;
+	static bool LogModuleInfo(const char* Name, const char* Path, Util::Pointer Base, size_t Size);
 };
