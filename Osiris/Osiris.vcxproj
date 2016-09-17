@@ -145,6 +145,7 @@
     <ClCompile Include="Libraries\Utils\Log.cpp" />
     <ClCompile Include="Libraries\Utils\Process.cpp" />
     <ClCompile Include="Libraries\Utils\Thread.cpp" />
+    <ClCompile Include="Modules\GlobalInfo.cpp" />
     <ClCompile Include="Osiris.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -162,6 +163,8 @@
     <ClInclude Include="Libraries\Utils\Process.hpp" />
     <ClInclude Include="Libraries\Utils\Singleton.hpp" />
     <ClInclude Include="Libraries\Utils\Thread.hpp" />
+    <ClInclude Include="Modules\GlobalInfo.hpp" />
+    <ClInclude Include="Modules\OsirisModule.hpp" />
     <ClInclude Include="Modules\OsirisModules.hpp" />
     <ClInclude Include="Osiris.hpp" />
     <ClInclude Include="Libraries\Utils\Utils.hpp" />

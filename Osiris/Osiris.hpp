@@ -8,13 +8,7 @@
 #include <chrono>
 #include <map>
 
-class OsirisModule
-{
-public:
-    virtual void Tick(const std::chrono::high_resolution_clock::duration &DeltaTime) = 0;
-    virtual ~OsirisModule() = default;
-private:
-};
+class OsirisModule;
 
 class Osiris : public Util::Singleton<Osiris>
 {
@@ -31,7 +25,7 @@ public:
         std::shared_ptr<T> Module = std::make_shared<T>();
 
         // Push to command list
-        Console::Console::Instance()->PushCommand(Name, Module);
+        //Console::Console::Instance()->PushCommand(Name, Module);
         // Add to Command list
         Commands[Name] = Module;
     }
