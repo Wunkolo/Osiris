@@ -1,8 +1,6 @@
 #include <windows.h>
 #include <iostream>
 #include <string>
-#include <iomanip>
-#include <stdlib.h>
 #include <psapi.h> //GetModuleFileNameEx
 
 #include "MinConsole.hpp"
