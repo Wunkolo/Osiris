@@ -34,22 +34,14 @@ std::wstring GetRunningDirectory();
 
 int main()
 {
-    void* hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleOutputCP(437);
-
-    size_t ConsoleWidth = 80;
-    CONSOLE_SCREEN_BUFFER_INFO ConsoleBuf;
-    if( GetConsoleScreenBufferInfo(hStdout, &ConsoleBuf) )
-    {
-        ConsoleWidth = ConsoleBuf.dwSize.X;
-    }
 
     Console::SetTextColor(Console::Color::Info);
     std::wcout << "Osiris Injector Build date (" << __DATE__ << " : " << __TIME__ << ")" << std::endl;
     Console::SetTextColor(Console::Color::Input);
     std::wcout << "\t-https://github.com/Wunkolo/Osiris\n";
     Console::SetTextColor(Console::Color::Magenta);
-    std::wcout << std::wstring(ConsoleWidth - 1, '-') << std::endl;
+    std::wcout << std::wstring(Console::GetWidth() - 1, '-') << std::endl;
     Console::SetTextColor(Console::Color::Info);
 
     uint32_t ProcessID = 0;
