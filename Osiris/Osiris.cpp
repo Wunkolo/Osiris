@@ -52,7 +52,7 @@ Osiris::Osiris()
 
     uint64_t ThreadID = Table->GetThreadIDByName("MAIN");
 
-    LOG << "Main Thread ID: " << ThreadID << std::endl;
+    LOG << "Main Thread ID:  0x" << ThreadID << std::endl;
 
     Util::Pointer Tls;
 
