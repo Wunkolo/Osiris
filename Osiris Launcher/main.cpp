@@ -5,6 +5,10 @@
 #include <stdlib.h>
 #include <psapi.h> //GetModuleFileNameEx
 
+#include "MinConsole.hpp"
+
+namespace Console = MinConsole;
+
 // Setting DLL access controls
 #include <AccCtrl.h>
 #include <Aclapi.h>
@@ -40,24 +44,13 @@ int main()
         ConsoleWidth = ConsoleBuf.dwSize.X;
     }
 
-    SetConsoleTextAttribute(hStdout,
-        FOREGROUND_RED |
-        FOREGROUND_GREEN |
-        FOREGROUND_INTENSITY);
+    Console::SetTextColor(Console::Color::Info);
     std::wcout << "Osiris Injector Build date (" << __DATE__ << " : " << __TIME__ << ")" << std::endl;
-    SetConsoleTextAttribute(hStdout,
-        FOREGROUND_BLUE |
-        FOREGROUND_GREEN |
-        FOREGROUND_INTENSITY);
+    Console::SetTextColor(Console::Color::Input);
     std::wcout << "\t-https://github.com/Wunkolo/Osiris\n";
-    SetConsoleTextAttribute(hStdout,
-        FOREGROUND_RED |
-        FOREGROUND_BLUE);
+    Console::SetTextColor(Console::Color::Magenta);
     std::wcout << std::wstring(ConsoleWidth - 1, '-') << std::endl;
-    SetConsoleTextAttribute(hStdout,
-        FOREGROUND_RED |
-        FOREGROUND_GREEN |
-        FOREGROUND_INTENSITY);
+    Console::SetTextColor(Console::Color::Info);
 
     uint32_t ProcessID = 0;
 
@@ -81,26 +74,35 @@ int main()
 
     std::wcout << "Launching Halo 5: Forge...";
 
-    LaunchAppUWP(ApplicationUserModelID, &ProcessID);
-    std::wcout << "Launched" << std::endl;
+    if( LaunchAppUWP(ApplicationUserModelID, &ProcessID) )
+    {
+        Console::SetTextColor(Console::Color::Green | Console::Color::Bright);
+        std::wcout << "Launched";
+    }
+    else
+    {
+        Console::SetTextColor(Console::Color::Red | Console::Color::Bright);
+        std::wcout << "Failed";
+    }
+    std::wcout << std::endl;
 
     //DebugSettings->Suspend(PackageID);
 
     std::wstring CurrentDirectory = GetRunningDirectory();
 
-    SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    Console::SetTextColor(Console::Color::Info);
     std::wcout << "Injecting "
         << CurrentDirectory << "\\" << DLLFile
         << " into process ID " << ProcessID << ": ";
 
     if( DLLInjectRemote(ProcessID, CurrentDirectory + L"\\" + DLLFile) )
     {
-        SetConsoleTextAttribute(hStdout, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+        Console::SetTextColor(Console::Color::Green | Console::Color::Bright);
         std::cout << "Success!" << std::endl;
     }
     else
     {
-        SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
+        Console::SetTextColor(Console::Color::Red | Console::Color::Bright);
         std::cout << "Failed" << std::endl;
         system("pause");
     }
