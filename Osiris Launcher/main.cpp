@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <locale>
 #include <codecvt>
-
 #include <conio.h>
 #include <psapi.h> //GetModuleFileNameEx
 
@@ -29,6 +28,8 @@ void SetAccessControl(std::wstring ExecutableName);
 uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath);
 
 bool LaunchAppUWP(const std::wstring &PackageName, uint32_t *ProcessID);
+
+std::wstring GetRunningDirectory();
 
 int main()
 {
@@ -88,8 +89,7 @@ int main()
 
     //DebugSettings->Suspend(PackageID);
 
-    std::wstring CurrentDirectory(MAX_PATH, 0);
-    CurrentDirectory.resize(GetCurrentDirectoryW(MAX_PATH, &CurrentDirectory[0]));
+    std::wstring CurrentDirectory = GetRunningDirectory();
 
     SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
     std::wcout << "Injecting "
@@ -312,4 +312,12 @@ bool LaunchAppUWP(const std::wstring &PackageID, uint32_t *ProcessID)
         return true;
     }
     return false;
+}
+
+std::wstring GetRunningDirectory()
+{
+	wchar_t exePath[MAX_PATH];
+	GetModuleFileNameW(GetModuleHandle(NULL), exePath, (sizeof(exePath)));
+	PathRemoveFileSpecW(exePath);
+	return std::wstring(exePath);
 }
