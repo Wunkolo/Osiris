@@ -83,7 +83,7 @@ int main()
     Console::SetTextColor(Console::Color::Info);
     std::wcout << "Injecting "
         << CurrentDirectory << "\\" << DLLFile
-        << " into process ID " << ProcessID << ": ";
+        << " into process ID 0x" << ProcessID << ": ";
 
     if( DLLInjectRemote(ProcessID, CurrentDirectory + L"\\" + DLLFile) )
     {
