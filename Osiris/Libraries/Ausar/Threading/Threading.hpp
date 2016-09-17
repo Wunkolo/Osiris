@@ -20,7 +20,7 @@ namespace Ausar
             } Entries[64];
 
             // returns -1 on error
-            uint64_t GetThreadIDByName(const char* Name) const;
+            uint32_t GetThreadIDByName(const char* Name) const;
         };
 #pragma pack(pop)
     }

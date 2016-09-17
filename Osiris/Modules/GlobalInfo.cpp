@@ -28,7 +28,7 @@ void GlobalInfo::Tick(const std::chrono::high_resolution_clock::duration & Delta
 
         Table = Util::Process::GetModuleBase()(0x58CA4B0).Point<Ausar::Threading::ThreadTable>();
 
-        uint64_t ThreadID = Table->GetThreadIDByName("MAIN");
+        uint32_t ThreadID = Table->GetThreadIDByName("MAIN");
 
         LOG << "Main Thread ID: 0x" << ThreadID << std::endl;
 
