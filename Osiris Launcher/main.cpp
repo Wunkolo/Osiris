@@ -3,9 +3,6 @@
 #include <string>
 #include <iomanip>
 #include <stdlib.h>
-#include <locale>
-#include <codecvt>
-#include <conio.h>
 #include <psapi.h> //GetModuleFileNameEx
 
 // Setting DLL access controls
@@ -316,8 +313,8 @@ bool LaunchAppUWP(const std::wstring &PackageID, uint32_t *ProcessID)
 
 std::wstring GetRunningDirectory()
 {
-	wchar_t exePath[MAX_PATH];
-	GetModuleFileNameW(GetModuleHandle(NULL), exePath, (sizeof(exePath)));
-	PathRemoveFileSpecW(exePath);
-	return std::wstring(exePath);
+    wchar_t exePath[MAX_PATH];
+    GetModuleFileNameW(GetModuleHandle(NULL), exePath, (sizeof(exePath)));
+    PathRemoveFileSpecW(exePath);
+    return std::wstring(exePath);
 }
