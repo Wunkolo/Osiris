@@ -74,6 +74,7 @@ Osiris::Osiris()
         LOG << "Local Game engine globals: " << Tls[0x13B0] << std::endl;
         LOG << "Game engine render globals: " << Tls[0x13B8] << std::endl;
         LOG << "Game time globals: " << Tls[0x12A8] << std::endl;
+        LOG << "game_state_header: " << Tls[0x1280] << std::endl;
         LOG << "Composer globals: " << Tls[0x1C8] << std::endl;
         LOG << "Fp weapons: " << Tls[0x1260] << std::endl;
 
