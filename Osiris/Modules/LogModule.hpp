@@ -7,7 +7,7 @@ public:
 	LogModule();
 	~LogModule();
 
-	static void LogMessage(const char* sourceFile, uint64_t sourceLine, uint64_t severity, uint64_t type, const char* message, ...);
+	static void LogMessage(const char* sourceFile, uint32_t sourceLine, uint32_t severity, uint32_t type, const char* message, ...);
 
 	void Tick(const std::chrono::high_resolution_clock::duration &DeltaTime);
 private:

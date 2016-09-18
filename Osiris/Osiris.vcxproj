@@ -80,9 +80,14 @@
   <ItemGroup>
     <ClCompile Include="Libraries\Ausar\AI\AI.cpp" />
     <ClCompile Include="Libraries\Ausar\Ausar.cpp" />
+    <ClCompile Include="Libraries\Ausar\Game\Camera.cpp" />
     <ClCompile Include="Libraries\Ausar\Game\Game.cpp" />
+    <ClCompile Include="Libraries\Ausar\Game\Objects.cpp" />
+    <ClCompile Include="Libraries\Ausar\Game\Players.cpp" />
     <ClCompile Include="Libraries\Ausar\Graphics\Graphics.cpp" />
     <ClCompile Include="Libraries\Ausar\Input\Input.cpp" />
+    <ClCompile Include="Libraries\Ausar\Input\Keyboard.cpp" />
+    <ClCompile Include="Libraries\Ausar\Input\Mouse.cpp" />
     <ClCompile Include="Libraries\Ausar\Logging\Logging.cpp" />
     <ClCompile Include="Libraries\Ausar\Memory\Memory.cpp" />
     <ClCompile Include="Libraries\Ausar\Networking\Networking.cpp" />
@@ -108,9 +113,14 @@
     <ClInclude Include="Console\Console.hpp" />
     <ClInclude Include="Libraries\Ausar\AI\AI.hpp" />
     <ClInclude Include="Libraries\Ausar\Ausar.hpp" />
+    <ClInclude Include="Libraries\Ausar\Game\Camera.hpp" />
     <ClInclude Include="Libraries\Ausar\Game\Game.hpp" />
+    <ClInclude Include="Libraries\Ausar\Game\Objects.hpp" />
+    <ClInclude Include="Libraries\Ausar\Game\Players.hpp" />
     <ClInclude Include="Libraries\Ausar\Graphics\Graphics.hpp" />
     <ClInclude Include="Libraries\Ausar\Input\Input.hpp" />
+    <ClInclude Include="Libraries\Ausar\Input\Keyboard.hpp" />
+    <ClInclude Include="Libraries\Ausar\Input\Mouse.hpp" />
     <ClInclude Include="Libraries\Ausar\Logging\Logging.hpp" />
     <ClInclude Include="Libraries\Ausar\Memory\Memory.hpp" />
     <ClInclude Include="Libraries\Ausar\Networking\Networking.hpp" />

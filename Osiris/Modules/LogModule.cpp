@@ -26,13 +26,12 @@ void LogModule::Tick(const std::chrono::high_resolution_clock::duration & DeltaT
 {
 	static std::chrono::high_resolution_clock::duration Timer
 		= std::chrono::high_resolution_clock::duration::zero();
-	static bool Dumped = false;
 
 	Timer += DeltaTime;
 }
 
 // TODO: I'm currently guessing on the severity and type parameters, they'll need proper flags/enums created eventually
-void LogModule::LogMessage(const char* sourceFile, uint64_t sourceLine, uint64_t severity, uint64_t type, const char* message, ...)
+void LogModule::LogMessage(const char* sourceFile, uint32_t sourceLine, uint32_t severity, uint32_t type, const char* message, ...)
 {
 	// construct formatted message
 	va_list ap;
@@ -42,5 +41,5 @@ void LogModule::LogMessage(const char* sourceFile, uint64_t sourceLine, uint64_t
 	vsprintf_s(buffer, bufferSize, message, ap);
 	va_end(ap);
 
-	LOG << sourceFile << " (" << sourceLine << ") - " << buffer << std::endl;
+	LOG << sourceFile << ":" << std::dec << sourceLine << " - " << buffer << std::endl;
 }
