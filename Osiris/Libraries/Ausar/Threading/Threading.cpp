@@ -1,5 +1,7 @@
 #include "Threading.hpp"
+#include <stdint.h>
 #include <string>
+#include "Utils/Thread.hpp"
 
 namespace Ausar
 {
@@ -19,5 +21,18 @@ namespace Ausar
             }
             return -1;
         }
+
+		// Returns the slot 0 TLS address of the main thread
+		Util::Pointer GetMainTls()
+		{
+			if (_mainThreadTlsBase == nullptr)
+			{
+				const Ausar::Threading::ThreadTable *Table;
+				Table = Util::Process::GetModuleBase()(0x58CA4B0).Point<Ausar::Threading::ThreadTable>();
+				uint32_t ThreadID = Table->GetThreadIDByName("MAIN");
+				Util::Thread::GetThreadLocalStorage(ThreadID, 0, _mainThreadTlsBase);
+			}
+			return _mainThreadTlsBase;
+		}
     }
 }
