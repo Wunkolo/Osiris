@@ -41,6 +41,7 @@ Osiris::Osiris()
 	Util::Process::IterateModules(LogModuleInfo);
 
     // Push Commands
+	PushModule<LogModule>("logging");
     PushModule<GlobalInfo>("globals");
 }
 

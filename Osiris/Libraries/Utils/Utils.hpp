@@ -9,6 +9,8 @@
 #include "Pointer.hpp"
 #include "Hook.hpp"
 
+#include "Debug.hpp"
+
 #include "Singleton.hpp"
 #include "NonCopyable.hpp"
 
