@@ -22,14 +22,14 @@ void LogMessage(const char* SourceFile, uint32_t SourceLine, uint32_t Severity, 
 LogModule::LogModule()
 {
     // empty zip password
-    Util::Process::GetModuleBase()(0x3344630).Write<uint8_t>(0);
+    Util::Process::Base()(0x3344630).Write<uint8_t>(0);
 
     // EnableReleaseLogShim and hook the main ingame logger
     TODO("Break this out into an external config option");
     bool RedirectGameLogs = false;
 
-    Util::Process::GetModuleBase()(0x58938C8).Write<uint8_t>(RedirectGameLogs);
-    Util::Process::GetModuleBase()(0x58938D0).Write<void*>(LogMessage);
+    Util::Process::Base()(0x58938C8).Write<uint8_t>(RedirectGameLogs);
+    Util::Process::Base()(0x58938D0).Write<void*>(LogMessage);
 
     LOG << "Log Module Loaded" << std::endl;
 }

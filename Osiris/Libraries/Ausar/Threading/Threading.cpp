@@ -30,7 +30,7 @@ namespace Ausar
             if( MainThreadTlsCache == nullptr )
             {
                 const Ausar::Threading::ThreadTable *Table;
-                Table = Util::Process::GetModuleBase()(0x58CA4B0).Point<Ausar::Threading::ThreadTable>();
+                Table = Util::Process::Base()(0x58CA4B0).Point<Ausar::Threading::ThreadTable>();
                 uint32_t ThreadID = Table->GetThreadIDByName("MAIN");
                 Util::Thread::GetThreadLocalStorage(ThreadID, 0, MainThreadTlsCache);
             }
