@@ -12,8 +12,7 @@ namespace Util
 
         inline Pointer Base()
         {
-            const static Pointer ProgramBase(GetModuleBase());
-            return ProgramBase;
+            return GetModuleBase();
         }
 
         // Return false to stop iteration
