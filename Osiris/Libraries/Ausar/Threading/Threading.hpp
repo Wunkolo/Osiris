@@ -4,11 +4,8 @@
 namespace Ausar
 {
     namespace Threading
-    {	
-		// cached copy due to how frequently this will be used
-		static Util::Pointer _mainThreadTlsBase;
-
-		Util::Pointer GetMainTls();
+    {
+        Util::Pointer GetMainTls();
 
 #pragma pack(push,1)
         struct ThreadTable

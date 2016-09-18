@@ -22,17 +22,19 @@ namespace Ausar
             return -1;
         }
 
-		// Returns the slot 0 TLS address of the main thread
-		Util::Pointer GetMainTls()
-		{
-			if (_mainThreadTlsBase == nullptr)
-			{
-				const Ausar::Threading::ThreadTable *Table;
-				Table = Util::Process::GetModuleBase()(0x58CA4B0).Point<Ausar::Threading::ThreadTable>();
-				uint32_t ThreadID = Table->GetThreadIDByName("MAIN");
-				Util::Thread::GetThreadLocalStorage(ThreadID, 0, _mainThreadTlsBase);
-			}
-			return _mainThreadTlsBase;
-		}
+        // Returns the slot 0 TLS address of the main thread
+        Util::Pointer GetMainTls()
+        {
+            // cached copy due to how frequently this will be used
+            static Util::Pointer MainThreadTlsCache;
+            if( MainThreadTlsCache == nullptr )
+            {
+                const Ausar::Threading::ThreadTable *Table;
+                Table = Util::Process::GetModuleBase()(0x58CA4B0).Point<Ausar::Threading::ThreadTable>();
+                uint32_t ThreadID = Table->GetThreadIDByName("MAIN");
+                Util::Thread::GetThreadLocalStorage(ThreadID, 0, MainThreadTlsCache);
+            }
+            return MainThreadTlsCache;
+        }
     }
 }
