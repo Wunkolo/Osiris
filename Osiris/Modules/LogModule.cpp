@@ -4,42 +4,44 @@
 #include <Utils/Utils.hpp>
 #include <stdarg.h>
 
+TODO("I'm currently guessing on the severity and type parameters, they'll need proper flags/enums created eventually")
+void LogMessage(const char* SourceFile, uint32_t SourceLine, uint32_t Severity, uint32_t Type, const char* Message, ...)
+{
+    // construct formatted message
+    va_list ArgList;
+    va_start(ArgList, Message);
+    intmax_t BufferSize = _vscprintf(Message, ArgList) + 1;
+    char* Buffer = new char[BufferSize];
+    vsprintf_s(Buffer, BufferSize, Message, ArgList);
+    va_end(ArgList);
+
+    LOG << SourceFile << ":" << std::dec << SourceLine << " - " << Buffer << std::endl;
+    delete[] Buffer;
+}
+
 LogModule::LogModule()
 {
-	// empty zip password
-	Util::Process::GetModuleBase()(0x3344630).Write<uint8_t>(0);
+    // empty zip password
+    Util::Process::GetModuleBase()(0x3344630).Write<uint8_t>(0);
 
-	// EnableReleaseLogShim and hook the main ingame logger
-	bool redirectGameLogs = false;	// TODO: break this out into an external config option
-	Util::Process::GetModuleBase()(0x58938C8).Write<uint8_t>(redirectGameLogs);
-	Util::Process::GetModuleBase()(0x58938D0).Write<void*>(LogMessage);
+    // EnableReleaseLogShim and hook the main ingame logger
+    TODO("Break this out into an external config option");
+    bool RedirectGameLogs = false;
 
-	LOG << "Log Module Loaded" << std::endl;
+    Util::Process::GetModuleBase()(0x58938C8).Write<uint8_t>(RedirectGameLogs);
+    Util::Process::GetModuleBase()(0x58938D0).Write<void*>(LogMessage);
+
+    LOG << "Log Module Loaded" << std::endl;
 }
 
 LogModule::~LogModule()
 {
-
 }
 
 void LogModule::Tick(const std::chrono::high_resolution_clock::duration & DeltaTime)
 {
-	static std::chrono::high_resolution_clock::duration Timer
-		= std::chrono::high_resolution_clock::duration::zero();
+    static std::chrono::high_resolution_clock::duration Timer
+        = std::chrono::high_resolution_clock::duration::zero();
 
-	Timer += DeltaTime;
-}
-
-// TODO: I'm currently guessing on the severity and type parameters, they'll need proper flags/enums created eventually
-void LogModule::LogMessage(const char* sourceFile, uint32_t sourceLine, uint32_t severity, uint32_t type, const char* message, ...)
-{
-	// construct formatted message
-	va_list ap;
-	va_start(ap, message);
-	int bufferSize = _vscprintf(message, ap) + 1;
-	char* buffer = new char[bufferSize];
-	vsprintf_s(buffer, bufferSize, message, ap);
-	va_end(ap);
-
-	LOG << sourceFile << ":" << std::dec << sourceLine << " - " << buffer << std::endl;
+    Timer += DeltaTime;
 }
