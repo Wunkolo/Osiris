@@ -32,5 +32,4 @@ public:
 
 private:
     std::map<std::string, std::shared_ptr<OsirisModule>> Commands;
-	static bool LogModuleInfo(const char* Name, const char* Path, Util::Pointer Base, size_t Size);
 };
