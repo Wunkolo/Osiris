@@ -30,6 +30,8 @@ public:
         Commands[Name] = Module;
     }
 
+    bool RunModule(const std::string& Name, const std::vector<std::string> &Arguments = {});
+
 private:
     std::map<std::string, std::shared_ptr<OsirisModule>> Commands;
 };
