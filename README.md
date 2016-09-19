@@ -2,7 +2,7 @@
 
 ![](https://camo.githubusercontent.com/9f71fb0664934dcacce48a7a943df8241c6f5196/68747470733a2f2f7667792e6d652f464d784741382e706e67)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/krdkgqrxbbj7s2tp?svg=true)](https://ci.appveyor.com/project/Wunkolo/osiris)
+[![Build status](https://ci.appveyor.com/api/projects/status/krdkgqrxbbj7s2tp?svg=true)](https://ci.appveyor.com/project/Wunkolo/osiris) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/Wunkolo/Osiris/master/LICENSE)
 
 Osiris is a research framework intended to interface with Microsoft's [Halo 5: Forge](https://www.microsoft.com/en-us/store/p/halo-5-forge/9nblggh51mwp).
 
