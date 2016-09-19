@@ -40,8 +40,4 @@ LogModule::~LogModule()
 
 void LogModule::Tick(const std::chrono::high_resolution_clock::duration & DeltaTime)
 {
-    static std::chrono::high_resolution_clock::duration Timer
-        = std::chrono::high_resolution_clock::duration::zero();
-
-    Timer += DeltaTime;
 }
