@@ -26,6 +26,8 @@ void GlobalInfo::Tick(const std::chrono::high_resolution_clock::duration & Delta
     {
         Util::Pointer Tls = Ausar::Threading::GetMainTls();
 
+        LOG << "DirectX Device: " << Util::Process::Base()(0x63707C8)[0] << std::endl;
+
         LOG << "Tls Globals: " << Tls << std::endl;
 
         LOG << "Physics Constants: " << Tls[0x2D30] << std::endl;
@@ -70,7 +72,7 @@ void GlobalInfo::Tick(const std::chrono::high_resolution_clock::duration & Delta
         LOG << "Object placement globals: " << Tls[0x4B58] << std::endl;
         LOG << "Object globals: " << Tls[0x4C08] << std::endl;
         LOG << "orientations: " << Tls[0x110] << std::endl;
-        
+
         Dumped = true;
     }
 }
