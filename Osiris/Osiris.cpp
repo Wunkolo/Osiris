@@ -57,7 +57,7 @@ Osiris::~Osiris()
 
 void Osiris::Tick(const std::chrono::high_resolution_clock::duration &DeltaTime)
 {
-    for( std::pair<std::string, std::shared_ptr<OsirisModule>> Command : Commands )
+    for( const std::pair<std::string, std::shared_ptr<OsirisModule>>& Command : Commands )
     {
         if( Command.second )
         {
@@ -68,7 +68,7 @@ void Osiris::Tick(const std::chrono::high_resolution_clock::duration &DeltaTime)
 
 bool Osiris::RunModule(const std::string &Name, const std::vector<std::string> &Arguments)
 {
-    std::map<std::string, std::shared_ptr<OsirisModule>>::iterator CommandIter;
+    std::map<std::string, std::shared_ptr<OsirisModule>>::const_iterator CommandIter;
     CommandIter = Commands.find(Name);
     if( CommandIter != Commands.end() )
     {
