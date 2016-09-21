@@ -105,6 +105,9 @@
     <ClCompile Include="Libraries\Ausar\Input\Mouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Modules\PackageDump.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Console\Console.hpp">
@@ -219,6 +222,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\Ausar\Input\Mouse.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Modules\PackageDump.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

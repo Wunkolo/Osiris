@@ -106,6 +106,7 @@
     <ClCompile Include="Libraries\Utils\Thread.cpp" />
     <ClCompile Include="Modules\GlobalInfo.cpp" />
     <ClCompile Include="Modules\LogModule.cpp" />
+    <ClCompile Include="Modules\PackageDump.cpp" />
     <ClCompile Include="Osiris.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -146,6 +147,7 @@
     <ClInclude Include="Modules\LogModule.hpp" />
     <ClInclude Include="Modules\OsirisModule.hpp" />
     <ClInclude Include="Modules\OsirisModules.hpp" />
+    <ClInclude Include="Modules\PackageDump.hpp" />
     <ClInclude Include="Osiris.hpp" />
     <ClInclude Include="Libraries\Utils\Utils.hpp" />
   </ItemGroup>

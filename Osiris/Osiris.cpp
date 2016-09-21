@@ -49,6 +49,11 @@ Osiris::Osiris()
     // Push Commands
     PushModule<LogModule>("logging");
     PushModule<GlobalInfo>("globals");
+    PushModule<PackageDump>("dump");
+
+    TODO("Config file to enable dumping of files");
+    // Uncomment this to enable dumping
+    //RunModule("dump");
 }
 
 Osiris::~Osiris()
