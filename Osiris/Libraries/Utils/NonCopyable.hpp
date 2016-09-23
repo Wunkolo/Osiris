@@ -2,6 +2,7 @@
 
 namespace Util
 {
+    template <typename T>
     class NonCopyable
     {
     protected:
