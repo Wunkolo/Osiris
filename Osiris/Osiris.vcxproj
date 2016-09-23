@@ -104,6 +104,7 @@
     <ClCompile Include="Libraries\Utils\Log.cpp" />
     <ClCompile Include="Libraries\Utils\Process.cpp" />
     <ClCompile Include="Libraries\Utils\Thread.cpp" />
+    <ClCompile Include="Libraries\UWP\UWP.cpp" />
     <ClCompile Include="Modules\GlobalInfo.cpp" />
     <ClCompile Include="Modules\LogModule.cpp" />
     <ClCompile Include="Modules\PackageDump.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="Libraries\Utils\Process.hpp" />
     <ClInclude Include="Libraries\Utils\Singleton.hpp" />
     <ClInclude Include="Libraries\Utils\Thread.hpp" />
+    <ClInclude Include="Libraries\UWP\UWP.hpp" />
     <ClInclude Include="Modules\GlobalInfo.hpp" />
     <ClInclude Include="Modules\LogModule.hpp" />
     <ClInclude Include="Modules\OsirisModule.hpp" />

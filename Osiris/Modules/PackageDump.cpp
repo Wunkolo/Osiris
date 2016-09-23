@@ -3,9 +3,7 @@
 #include <Windows.h>
 #include <Shlobj.h>
 
-// Package Query API
-#include <appmodel.h>
-
+#include <UWP/UWP.hpp>
 #include <Utils/Utils.hpp>
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
@@ -27,11 +25,7 @@ bool PackageDump::Execute(const std::vector<std::string> &Arguments)
     wchar_t UserPath[MAX_PATH] = { 0 };
     SHGetFolderPathW(nullptr, CSIDL_PROFILE, nullptr, 0, UserPath);
 
-    uint32_t FamilyNameLength = 0;
-    std::wstring DumpPath;
-    GetCurrentPackageFamilyName(&FamilyNameLength, nullptr);
-    DumpPath.resize(FamilyNameLength - 1);
-    GetCurrentPackageFamilyName(&FamilyNameLength, &DumpPath[0]);
+    std::wstring DumpPath = UWP::Current::GetFamilyName();
 
     DumpPath = fs::path(UserPath) / L"AppData/Local/Packages" / DumpPath / L"/TempState/DUMP";
 
