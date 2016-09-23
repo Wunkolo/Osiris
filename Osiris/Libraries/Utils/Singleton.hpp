@@ -1,10 +1,11 @@
 #pragma once
 #include <memory>
+#include "NonCopyable.hpp"
 
 namespace Util
 {
     template <typename T>
-    class Singleton
+    class Singleton : private Util::NonCopyable<Singleton<T> >
     {
     public:
         static std::shared_ptr<T> Instance()
