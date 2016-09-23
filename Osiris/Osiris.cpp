@@ -3,7 +3,6 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-#include <ShlObj.h>
 
 #include "Osiris.hpp"
 
@@ -19,22 +18,24 @@
 
 Osiris::Osiris()
 {
-    wchar_t UserPath[MAX_PATH] = { 0 };
-    SHGetSpecialFolderPathW(nullptr, UserPath, CSIDL_PROFILE, false);
+    std::wstring WorkingPath = UWP::Current::Storage::GetTempStatePath();
 
-    std::wstring LogPath(UserPath);
-    LogPath += L"\\AppData\\Local\\Packages\\" + UWP::Current::GetFamilyName() + L"\\TempState\\Log.txt";
-
-    Util::Log::Instance()->SetFile(LogPath);
+    Util::Log::Instance()->SetFile(WorkingPath + L"\\Log.txt");
 
     LOG << "Osiris" << "---- ";
     LOG << '[' << __DATE__ << " : " << __TIME__ << ']' << std::endl;
     LOG << "\t-https://github.com/Wunkolo/Osiris\n";
+    LOG << "Working Path: " << WorkingPath << std::endl;
     LOG << std::wstring(80, '-') << std::endl;
+
+    LOG << "Publisher: " << UWP::Current::GetPublisher() << std::endl;
+    LOG << "Publisher ID: " << UWP::Current::GetPublisherID() << std::endl;
+    LOG << "Publisher Path: " << UWP::Current::Storage::GetPublisherPath() << std::endl;
+
     LOG << "Package Path: " << UWP::Current::GetPackagePath() << std::endl;
     LOG << "Package Name: " << UWP::Current::GetFullName() << std::endl;
-    LOG << "Publisher: " << UWP::Current::GetPublisher() << std::endl;
     LOG << "Family Name: " << UWP::Current::GetFamilyName() << std::endl;
+
     LOG << std::hex << std::uppercase << std::setfill(L'0')
         << "Process Base: 0x" << Util::Process::Base() << std::endl;
     LOG << "Osiris Thread ID: 0x" << Util::Thread::GetCurrentThreadId() << std::endl;

@@ -1,8 +1,5 @@
 #include "PackageDump.hpp"
 
-#include <Windows.h>
-#include <Shlobj.h>
-
 #include <UWP/UWP.hpp>
 #include <Utils/Utils.hpp>
 #include <experimental/filesystem>
@@ -22,12 +19,7 @@ void PackageDump::Tick(const std::chrono::high_resolution_clock::duration &Delta
 
 bool PackageDump::Execute(const std::vector<std::string> &Arguments)
 {
-    wchar_t UserPath[MAX_PATH] = { 0 };
-    SHGetFolderPathW(nullptr, CSIDL_PROFILE, nullptr, 0, UserPath);
-
-    std::wstring DumpPath = UWP::Current::GetFamilyName();
-
-    DumpPath = fs::path(UserPath) / L"AppData/Local/Packages" / DumpPath / L"/TempState/DUMP";
+    std::wstring DumpPath = fs::path(UWP::Current::Storage::GetTempStatePath()) / L"DUMP";
 
     LOG << "Dumping files..." << std::endl;
     LOG << "Dump path: " << DumpPath << std::endl;
@@ -35,7 +27,7 @@ bool PackageDump::Execute(const std::vector<std::string> &Arguments)
     try
     {
         fs::copy(
-            L".",
+            UWP::Current::GetPackagePath(),
             DumpPath,
             fs::copy_options::recursive | fs::copy_options::update_existing);
     }

@@ -1,5 +1,7 @@
 #include "UWP.hpp"
+
 #include <Windows.h>
+#include <ShlObj.h>
 #include <appmodel.h>
 #include <AppxPackaging.h>
 
@@ -111,6 +113,16 @@ std::wstring UWP::Current::GetPublisher()
     return L"";
 }
 
+std::wstring UWP::Current::GetPublisherID()
+{
+    std::shared_ptr<PACKAGE_ID> PackageID = GetPackageIdentifier();
+    if( PackageID )
+    {
+        return std::wstring(PackageID->publisherId);
+    }
+    return L"";
+}
+
 std::wstring UWP::Current::GetPackagePath()
 {
     std::wstring Path;
@@ -121,4 +133,54 @@ std::wstring UWP::Current::GetPackagePath()
     GetCurrentPackagePath(&PathSize, &Path[0]);
 
     return Path;
+}
+
+std::wstring UWP::Current::Storage::GetPublisherPath()
+{
+    std::shared_ptr<PACKAGE_ID> PackageID = GetPackageIdentifier();
+    if( PackageID )
+    {
+        wchar_t UserPath[MAX_PATH] = { 0 };
+        SHGetSpecialFolderPathW(nullptr, UserPath, CSIDL_PROFILE, false);
+
+        std::wstring PublisherPath(UserPath);
+
+        PublisherPath += L"\\AppData\\Local\\Publishers\\";
+        PublisherPath += PackageID->publisherId;
+
+        return PublisherPath;
+    }
+    return L"";
+}
+
+std::wstring UWP::Current::Storage::GetStoragePath()
+{
+    wchar_t UserPath[MAX_PATH] = { 0 };
+    SHGetSpecialFolderPathW(nullptr, UserPath, CSIDL_PROFILE, false);
+
+    std::wstring StoragePath(UserPath);
+
+    StoragePath += L"\\AppData\\Local\\Packages\\" + UWP::Current::GetFamilyName();
+
+    return StoragePath;
+}
+
+std::wstring UWP::Current::Storage::GetLocalCachePath()
+{
+    return GetStoragePath() + L"\\LocalCache";
+}
+
+std::wstring UWP::Current::Storage::GetLocalPath()
+{
+    return GetStoragePath() + L"\\LocalState";
+}
+
+std::wstring UWP::Current::Storage::GetRoamingPath()
+{
+    return GetStoragePath() + L"\\RoamingState";
+}
+
+std::wstring UWP::Current::Storage::GetTempStatePath()
+{
+    return GetStoragePath() + L"\\TempState";
 }
