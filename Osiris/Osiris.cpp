@@ -37,14 +37,14 @@ Osiris::Osiris()
     LOG << "Osiris Thread ID: 0x" << Util::Thread::GetCurrentThreadId() << std::endl;
     LOG << "Osiris Base: 0x" << Util::Process::GetModuleBase("Osiris.dll") << std::endl;
 
-    LOG << "---- Loaded Modules ----" << std::endl;
-    Util::Process::IterateModules(
-        [](const char* Name, const char* Path, Util::Pointer Base, size_t Size) -> bool
-    {
-        LOG << "0x" << std::hex << Base << " - 0x" << std::hex << Base(Size) << " | " << Path << std::endl;
-        return true;
-    }
-    );
+    //LOG << "---- Loaded Modules ----" << std::endl;
+    //Util::Process::IterateModules(
+    //    [](const char* Name, const char* Path, Util::Pointer Base, size_t Size) -> bool
+    //{
+    //    LOG << "0x" << std::hex << Base << " - 0x" << std::hex << Base(Size) << " | " << Path << std::endl;
+    //    return true;
+    //}
+    //);
 
     // Push Commands
     PushModule<LogModule>("logging");
