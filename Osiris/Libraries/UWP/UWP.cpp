@@ -14,7 +14,12 @@ namespace
         uint32_t Size = 0;
         GetCurrentPackageId(&Size, nullptr);
 
-        std::shared_ptr<PACKAGE_ID> Result = std::make_shared<PACKAGE_ID>();
+        std::shared_ptr<PACKAGE_ID> Result(
+            reinterpret_cast<PACKAGE_ID*>(malloc(Size)),
+            [](PACKAGE_ID *PackageID)
+        {
+            free(PackageID);
+        });
 
         if( GetCurrentPackageId(
             &Size,
@@ -32,8 +37,13 @@ namespace
         uint32_t Count = 0;
         GetCurrentPackageInfo(PACKAGE_FILTER_HEAD, &Size, nullptr, &Count);
 
-        std::shared_ptr<PACKAGE_INFO> Result
-            = std::make_shared<PACKAGE_INFO>();
+        std::shared_ptr<PACKAGE_INFO> Result(
+            reinterpret_cast<PACKAGE_INFO*>(malloc(Size)),
+            [](PACKAGE_INFO *PackageInfo)
+        {
+            free(PackageInfo);
+        }
+        );
 
         if( GetCurrentPackageInfo(
             PACKAGE_FILTER_HEAD,
