@@ -104,5 +104,43 @@ namespace Util
             CloseHandle(hSnapShot);
             return;
         }
+
+#define READABLE (PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY | PAGE_READONLY | PAGE_READWRITE | PAGE_WRITECOPY)
+#define PROTECTED (PAGE_GUARD | PAGE_NOCACHE | PAGE_NOACCESS)
+        void IterateReadableMemory(MemoryCallback MemoryProc)
+        {
+            MEMORY_BASIC_INFORMATION MemInfo;
+
+            for( uint8_t *i = nullptr;
+                (VirtualQuery(i, &MemInfo, sizeof(MEMORY_BASIC_INFORMATION)))
+                == sizeof(MEMORY_BASIC_INFORMATION);
+                i += MemInfo.RegionSize )
+            {
+                if( (MemInfo.Type & MEM_PRIVATE) == 0 ) // Not private, skip
+                {
+                    continue;
+                }
+
+                if( (MemInfo.State & (MEM_COMMIT)) == 0 ) // Not committed, skip
+                {
+                    continue;
+                }
+
+                if( (MemInfo.Protect & PROTECTED) ) // Protected, skip
+                {
+                    continue;
+                }
+
+                if( !(MemInfo.Protect & READABLE) ) // Not readable, skip
+                {
+                    continue;
+                }
+
+                if( MemoryProc(Pointer(i), MemInfo.RegionSize) == false )
+                {
+                    break;
+                }
+            }
+        }
     }
 }

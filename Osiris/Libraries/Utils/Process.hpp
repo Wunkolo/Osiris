@@ -28,5 +28,16 @@ namespace Util
             ModuleCallback ModuleProc,
             uint32_t ProcessID = GetProcessID()
         );
+
+        // Return false to stop iteration
+        typedef bool(*MemoryCallback)(
+            Pointer Base,
+            size_t Size
+            );
+
+        // Iterates all readable memory in the current process
+        void IterateReadableMemory(
+            MemoryCallback MemoryProc
+        );
     }
 }
