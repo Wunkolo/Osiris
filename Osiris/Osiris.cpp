@@ -17,7 +17,14 @@
 #include <iterator>
 
 #include <regex>
+#include <thread>
+#include <mutex>
 #include "TagName.hpp"
+
+uint32_t DebugMaterial = 0;
+
+std::vector<Util::Pointer> Whiten;
+std::mutex WhitenMutex;
 
 Osiris::Osiris()
 {
@@ -55,47 +62,93 @@ Osiris::Osiris()
 
     InitTagNames();
 
-    LOG << "Finding pattern";
+    LOG << "Finding pattern" << std::endl;
     Util::Process::IterateReadableMemory(
         [](Util::Pointer Base, size_t Size) -> bool
     {
-        LOG << "Region: " << Base << " | " << Size << std::endl;
-        //7F0000???????? global_id ????????00000000tagclassruntime_id
-        static const std::regex const Expression(
-            R"(\x7F[\x00]{2}[\x00-\xFF]{4}[\x00-\xFF]{4}[\x00-\xFF]{4}[\x00]{4}\x20tam[\x00-\xFF]{4})",
-            std::regex::optimize | std::regex::nosubs
-        );
-
-        std::cregex_iterator Start = std::cregex_iterator(
-            Base.Point<const char>(),
-            Base(Size).Point<const char>(),
-            Expression
-        );
-
-        std::cregex_iterator End = std::cregex_iterator();
-
-        for( std::cregex_iterator i = Start; i != End; i++ )
+        __try
         {
-            LOG << "succ" << std::endl;
-            const std::cmatch Match = *i;
-            uint32_t GlobalID = Base(Match.position(7)).Read<uint32_t>();
-            uint32_t RuntimeID = Base(Match.position(23)).Read<uint32_t>();
-            const char * Name = GetTagNameFromGlobalID(GlobalID);
-            if( Name == nullptr )
-            {
-                Name = "Not found";
-            }
-            LOG << "Offset: " << Base(Match.position()) << std::endl;
-            LOG << "\tName: " << Name << std::endl;
-            LOG << "\tGlobalID: " << GlobalID << std::endl;
-            LOG << "\tRuntimeID: " << RuntimeID << std::endl;
-        }
+            [&]() {//LOG << "Region: " << Base << " | " << Size << std::endl;
+            //7F0000???????? global_id ????????00000000tagclassruntime_id
+                static const std::regex const Expression(
+                    R"(\x7F\x00\x00[\x00-\xFF]{12}[\x00]{4}\x20tam)",
+                    std::regex::optimize | std::regex::nosubs
+                );
 
+                std::cregex_iterator Start = std::cregex_iterator(
+                    Base.Point<const char>(),
+                    Base(Size).Point<const char>(),
+                    Expression
+                );
+
+                std::cregex_iterator End = std::cregex_iterator();
+
+                for( std::cregex_iterator i = Start; i != End; i++ )
+                {
+                    const std::cmatch Match = *i;
+                    uint32_t GlobalID = Base(Match.position())(7).Read<uint32_t>();
+                    uint32_t RuntimeID = Base(Match.position())(23).Read<uint32_t>();
+                    const char * Name = GetTagNameFromGlobalID(GlobalID);
+                    if( Name == nullptr )
+                    {
+                        Name = "Not found";
+                    }
+                    LOG << "Offset: " << Base(Match.position()) << std::endl;
+                    LOG << "\tName: " << Name << std::endl;
+                    LOG << "\tGlobalID: " << GlobalID << std::endl;
+                    LOG << "\tRuntimeID: " << RuntimeID << std::endl;
+
+                    if( GlobalID == 0x694D )
+                    {
+                        LOG << "==========================Found Debug Material (thread created)" << std::endl;
+                        DebugMaterial = RuntimeID;
+                        std::thread WhitenThread(
+                            []()
+                        {
+                            while( DebugMaterial != 0 )
+                            {
+                                WhitenMutex.lock();
+                                if( Whiten.size() != 0 )
+                                {
+                                    for( const Util::Pointer &Id : Whiten )
+                                    {
+                                        Id.Write<uint32_t>(DebugMaterial);
+                                    }
+                                    Whiten.clear();
+                                }
+                                WhitenMutex.unlock();
+                            }
+                        }
+                        );
+                        WhitenThread.detach();
+                    }
+                    if( (strstr(Name, R"(levels\)") != nullptr)
+                        || (strstr(Name, R"(objects\)") != nullptr)
+                        )
+                    {
+                        LOG << "==========================Tagged for write" << std::endl;
+                        WhitenMutex.lock();
+                        Whiten.push_back(Base(Match.position())(23));
+                        WhitenMutex.unlock();
+                    }
+                }
+            }();
+        }
+        __except( [&](LPEXCEPTION_POINTERS p) -> int
+        {
+            LOG << "yikes at " << Base << "!!!" << std::endl;
+            return EXCEPTION_CONTINUE_SEARCH;
+        }(GetExceptionInformation()) )
+        {
+            return false;
+        }
         return true;
     }
     );
 
     LOG << "Done" << std::endl;
+
+    DebugMaterial = 0;
 
     // Push Commands
     PushModule<LogModule>("logging");
