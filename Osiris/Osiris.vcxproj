@@ -70,6 +70,7 @@
       <SDLCheck>false</SDLCheck>
       <AdditionalIncludeDirectories>.\Libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -110,6 +111,7 @@
     <ClCompile Include="Modules\PackageDump.cpp" />
     <ClCompile Include="Osiris.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TagName.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Console\Console.hpp" />
@@ -152,6 +154,7 @@
     <ClInclude Include="Modules\PackageDump.hpp" />
     <ClInclude Include="Osiris.hpp" />
     <ClInclude Include="Libraries\Utils\Utils.hpp" />
+    <ClInclude Include="TagName.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Osiris Launcher\Osiris Launcher.vcxproj" />

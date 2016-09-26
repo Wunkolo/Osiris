@@ -16,6 +16,9 @@
 #include <vector>
 #include <iterator>
 
+#include <regex>
+#include "TagName.hpp"
+
 Osiris::Osiris()
 {
     std::wstring WorkingPath = UWP::Current::Storage::GetTempStatePath();
@@ -49,6 +52,50 @@ Osiris::Osiris()
     //    return true;
     //}
     //);
+
+    InitTagNames();
+
+    LOG << "Finding pattern";
+    Util::Process::IterateReadableMemory(
+        [](Util::Pointer Base, size_t Size) -> bool
+    {
+        LOG << "Region: " << Base << " | " << Size << std::endl;
+        //7F0000???????? global_id ????????00000000tagclassruntime_id
+        static const std::regex const Expression(
+            R"(\x7F[\x00]{2}[\x00-\xFF]{4}[\x00-\xFF]{4}[\x00-\xFF]{4}[\x00]{4}\x20tam[\x00-\xFF]{4})",
+            std::regex::optimize | std::regex::nosubs
+        );
+
+        std::cregex_iterator Start = std::cregex_iterator(
+            Base.Point<const char>(),
+            Base(Size).Point<const char>(),
+            Expression
+        );
+
+        std::cregex_iterator End = std::cregex_iterator();
+
+        for( std::cregex_iterator i = Start; i != End; i++ )
+        {
+            LOG << "succ" << std::endl;
+            const std::cmatch Match = *i;
+            uint32_t GlobalID = Base(Match.position(7)).Read<uint32_t>();
+            uint32_t RuntimeID = Base(Match.position(23)).Read<uint32_t>();
+            const char * Name = GetTagNameFromGlobalID(GlobalID);
+            if( Name == nullptr )
+            {
+                Name = "Not found";
+            }
+            LOG << "Offset: " << Base(Match.position()) << std::endl;
+            LOG << "\tName: " << Name << std::endl;
+            LOG << "\tGlobalID: " << GlobalID << std::endl;
+            LOG << "\tRuntimeID: " << RuntimeID << std::endl;
+        }
+
+        return true;
+    }
+    );
+
+    LOG << "Done" << std::endl;
 
     // Push Commands
     PushModule<LogModule>("logging");
