@@ -18,13 +18,17 @@
 
 #include <regex>
 #include <thread>
+#include <set>
 #include <mutex>
 #include "TagName.hpp"
 
-uint32_t DebugMaterial = 0;
+uint32_t Run = 0;
 
-std::vector<Util::Pointer> Whiten;
-std::mutex WhitenMutex;
+std::vector<Util::Pointer> ModelArray;
+std::mutex ModelMutex;
+
+std::vector<uint32_t> ModelIDArray;
+std::mutex ModelIDMutex;
 
 Osiris::Osiris()
 {
@@ -63,6 +67,28 @@ Osiris::Osiris()
     InitTagNames();
 
     LOG << "Finding pattern" << std::endl;
+
+    Run = 1;
+    std::thread CycleThread(
+        []()
+    {
+        while( Run != 0 )
+        {
+            ModelMutex.lock();
+            ModelIDMutex.lock();
+            for( const auto& ModelPtr : ModelArray )
+            {
+                // Assign each Model pointer another random model
+                ModelPtr.Write<uint32_t>(ModelIDArray[rand() % ModelIDArray.size()]);
+            }
+            ModelIDMutex.unlock();
+            ModelMutex.unlock();
+            std::this_thread::sleep_for(std::chrono::milliseconds(125));
+        }
+    }
+    );
+    CycleThread.detach();
+
     Util::Process::IterateReadableMemory(
         [](Util::Pointer Base, size_t Size) -> bool
     {
@@ -98,38 +124,29 @@ Osiris::Osiris()
                     LOG << "\tGlobalID: " << GlobalID << std::endl;
                     LOG << "\tRuntimeID: " << RuntimeID << std::endl;
 
-                    if( GlobalID == 0x694D )
-                    {
-                        LOG << "==========================Found Debug Material (thread created)" << std::endl;
-                        DebugMaterial = RuntimeID;
-                        std::thread WhitenThread(
-                            []()
-                        {
-                            while( DebugMaterial != 0 )
-                            {
-                                WhitenMutex.lock();
-                                if( Whiten.size() != 0 )
-                                {
-                                    for( const Util::Pointer &Id : Whiten )
-                                    {
-                                        Id.Write<uint32_t>(DebugMaterial);
-                                    }
-                                    Whiten.clear();
-                                }
-                                WhitenMutex.unlock();
-                            }
-                        }
-                        );
-                        WhitenThread.detach();
-                    }
-                    if( (strstr(Name, R"(levels\)") != nullptr)
-                        || (strstr(Name, R"(objects\)") != nullptr)
+                    if(
+                        (strstr(Name, R"(objects\equipment)") != nullptr)
+                        || (strstr(Name, R"(levels\assets)") != nullptr)
+                        || (strstr(Name, R"(levels\multi)") != nullptr)
+                        || (strstr(Name, R"(levels\forge)") != nullptr)
+                        || (strstr(Name, R"(objects\vehicles)") != nullptr)
+                        || (strstr(Name, R"(objects\weapons)") != nullptr)
+                        || (strstr(Name, R"(objects\characters)") != nullptr)
+                        || (strstr(Name, R"(objects\levels)") != nullptr)
+                        || (strstr(Name, R"(objects\temp)") != nullptr)
                         )
                     {
-                        LOG << "==========================Tagged for write" << std::endl;
-                        WhitenMutex.lock();
-                        Whiten.push_back(Base(Match.position())(23));
-                        WhitenMutex.unlock();
+                        LOG << "==========================Added to list" << std::endl;
+                        ModelIDMutex.lock();
+                        ModelIDArray.push_back(Base(Match.position())(23).Read<uint32_t>());
+                        // Remove duplicates
+                        std::set<uint32_t> Unique(ModelIDArray.begin(), ModelIDArray.end());
+                        ModelIDArray.assign(Unique.begin(), Unique.end());
+                        ModelIDMutex.unlock();
+
+                        ModelMutex.lock();
+                        ModelArray.push_back(Base(Match.position())(23));
+                        ModelMutex.unlock();
                     }
                 }
             }();
@@ -148,7 +165,7 @@ Osiris::Osiris()
 
     LOG << "Done" << std::endl;
 
-    DebugMaterial = 0;
+    //Spartan = 0;
 
     // Push Commands
     PushModule<LogModule>("logging");
