@@ -106,7 +106,7 @@ int main()
 
 void SetAccessControl(std::wstring ExecutableName)
 {
-    PSECURITY_DESCRIPTOR *SecurityDescriptor = nullptr;
+    PSECURITY_DESCRIPTOR SecurityDescriptor = nullptr;
     EXPLICIT_ACCESSW ExplicitAccess = { 0 };
 
     ACL *AccessControlCurrent = nullptr;
@@ -123,7 +123,7 @@ void SetAccessControl(std::wstring ExecutableName)
         nullptr,
         &AccessControlCurrent,
         nullptr,
-        SecurityDescriptor) == ERROR_SUCCESS )
+        &SecurityDescriptor) == ERROR_SUCCESS )
     {
         ConvertStringSidToSidW(L"S-1-15-2-1", &SecurityIdentifier);
         if( SecurityIdentifier != nullptr )
