@@ -58,15 +58,15 @@ namespace Util
             return Pointer(Address - Offset);
         }
 
-		bool operator== (const std::nullptr_t value) const
-		{
-			return reinterpret_cast<void*>(this->Address) == nullptr;
-		}
+        bool operator== (const std::nullptr_t value) const
+        {
+            return reinterpret_cast<void*>(this->Address) == nullptr;
+        }
 
-		bool operator!= (const std::nullptr_t value) const
-		{
-			return !(this == nullptr);
-		}
+        bool operator!= (const std::nullptr_t value) const
+        {
+            return reinterpret_cast<void*>(this->Address) != nullptr;
+        }
 
         // Casting
 
