@@ -24,7 +24,7 @@ const wchar_t* PackageID = L"Microsoft.Halo5Forge_1.114.4592.2_x64__8wekyb3d8bbw
 // UWP apps require DLLS with "ALL APPLICATION PACKAGES" group
 void SetAccessControl(std::wstring ExecutableName);
 
-uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath);
+bool DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath);
 
 bool LaunchAppUWP(const std::wstring &PackageName, uint32_t *ProcessID);
 
@@ -166,7 +166,7 @@ void SetAccessControl(std::wstring ExecutableName)
     }
 }
 
-uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath)
+bool DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath)
 {
     const size_t DLLPathSize = ((DLLpath.size() + 1) * sizeof(wchar_t));
     uint32_t Result = 0;
@@ -270,7 +270,7 @@ uint32_t DLLInjectRemote(uint32_t ProcessID, const std::wstring& DLLpath)
 
     VirtualFreeEx(Process, VirtualAlloc, 0, MEM_RELEASE);
     CloseHandle(Process);
-    return Result;
+    return true;
 }
 
 bool LaunchAppUWP(const std::wstring &PackageID, uint32_t *ProcessID)
