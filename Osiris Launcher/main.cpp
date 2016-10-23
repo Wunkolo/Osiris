@@ -19,7 +19,7 @@ namespace Console = MinConsole;
 const wchar_t* DLLFile = L"Osiris.dll";
 
 const wchar_t* ApplicationUserModelID = L"Microsoft.Halo5Forge_8wekyb3d8bbwe!Ausar";
-const wchar_t* PackageID = L"Microsoft.Halo5Forge_1.114.4592.2_x64__8wekyb3d8bbwe";
+const wchar_t* PackageID = L"Microsoft.Halo5Forge_1.122.23342.2_x64__8wekyb3d8bbwe";
 
 // UWP apps require DLLS with "ALL APPLICATION PACKAGES" group
 void SetAccessControl(std::wstring ExecutableName);
